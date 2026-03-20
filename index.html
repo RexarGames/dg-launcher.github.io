@@ -170,6 +170,119 @@
       background: rgba(255,255,255,0.06);
     }
 
+    .top-rated-section {
+      margin: 12px 0 14px;
+    }
+
+    .top-rated-card {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      min-height: 210px;
+      background: #0d1320;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+      text-align: left;
+      transition: 0.15s ease;
+    }
+
+    .top-rated-card:hover {
+      transform: translateY(-1px);
+    }
+
+    .top-rated-bg {
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      transform: scale(1.02);
+    }
+
+    .top-rated-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(5,10,20,0.92) 0%, rgba(5,10,20,0.62) 48%, rgba(5,10,20,0.22) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.38));
+    }
+
+    .top-rated-content {
+      position: relative;
+      z-index: 2;
+      padding: 22px;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .top-rated-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(243,195,22,0.16);
+      color: #ffe27d;
+      border: 1px solid rgba(243,195,22,0.28);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .top-rated-name {
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.02;
+      font-weight: 900;
+      color: #fff;
+      max-width: 700px;
+      text-shadow: 0 3px 14px rgba(0,0,0,0.35);
+    }
+
+    .top-rated-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .top-rated-genre,
+    .top-rated-score,
+    .top-rated-count {
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .top-rated-genre {
+      background: rgba(255,255,255,0.10);
+      color: #f2f2f2;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .top-rated-score {
+      background: rgba(243,195,22,0.95);
+      color: #171717;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .top-rated-count {
+      background: rgba(0,0,0,0.34);
+      color: #dfe6f3;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
     .suggestions {
       margin-top: 8px;
       background: #3f4658;
@@ -444,6 +557,7 @@
       color: #aeb7c7;
       font-size: 14px;
       line-height: 1.5;
+      white-space: pre-line;
     }
 
     .result-side {
@@ -557,6 +671,7 @@
       color: #b5b5b5;
       line-height: 1.7;
       font-size: 15px;
+      white-space: pre-line;
     }
 
     .modal-buttons {
@@ -644,6 +759,14 @@
         justify-content: flex-start;
         padding-top: 0;
       }
+
+      .top-rated-card {
+        min-height: 190px;
+      }
+
+      .top-rated-content {
+        min-height: 190px;
+      }
     }
 
     @media (max-width: 640px) {
@@ -709,6 +832,19 @@
       .btn-dark {
         width: 100%;
       }
+
+      .top-rated-name {
+        font-size: 24px;
+      }
+
+      .top-rated-content {
+        padding: 16px;
+      }
+
+      .top-rated-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -739,6 +875,21 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="top-rated-section" id="topRatedSection">
+      <button class="top-rated-card" id="topRatedCard" type="button">
+        <div class="top-rated-bg" id="topRatedBg"></div>
+        <div class="top-rated-content">
+          <div class="top-rated-kicker" id="topRatedKicker">Топ игры по оценкам</div>
+          <div class="top-rated-name" id="topRatedName"></div>
+          <div class="top-rated-bottom">
+            <div class="top-rated-genre" id="topRatedGenre"></div>
+            <div class="top-rated-score" id="topRatedScore"></div>
+            <div class="top-rated-count" id="topRatedCount"></div>
+          </div>
+        </div>
+      </button>
     </div>
 
     <div class="catalog-view" id="catalogView">
@@ -801,7 +952,10 @@
         close: "Закрыть",
         codeLabel: "Код для лаунчера",
         codeNote: "Используйте этот код в физическом лаунчере.",
-        empty: "Ничего не найдено. Попробуй другой запрос."
+        empty: "Ничего не найдено. Попробуй другой запрос.",
+        topRated: "Топ игры по оценкам",
+        rating: "Оценка",
+        votes: "оценок"
       },
       zh: {
         search: "搜索",
@@ -813,7 +967,10 @@
         close: "关闭",
         codeLabel: "启动器代码",
         codeNote: "请在实体启动器中使用此代码。",
-        empty: "未找到内容。请尝试其他搜索词。"
+        empty: "未找到内容。请尝试其他搜索词。",
+        topRated: "评分最高游戏",
+        rating: "评分",
+        votes: "条评分"
       },
       en: {
         search: "Search",
@@ -825,7 +982,10 @@
         close: "Close",
         codeLabel: "Launcher code",
         codeNote: "Use this code in the physical launcher.",
-        empty: "Nothing found. Try another search."
+        empty: "Nothing found. Try another search.",
+        topRated: "Top rated game",
+        rating: "Rating",
+        votes: "ratings"
       }
     };
 
@@ -883,7 +1043,9 @@
           "https://i.ibb.co/QFM8tCYH/EEyzgc.png",
           "https://i.ibb.co/Cstrgs4X/BDf-F1.png",
           "https://i.ibb.co/s9fX5szR/d7Soe1.png"
-        ]
+        ],
+        rating: 4.5,
+        ratingCount: 13
       },
       {
         id: "shadow",
@@ -1021,12 +1183,41 @@
           "https://i.ibb.co/qYSDndqj/rm5GOV.png",
           "https://i.ibb.co/7Jx3QQyS/3Hm-3V.png"
         ]
+      },
+      {
+        id: "youarealone",
+        title: {
+          ru: "You Are Alone",
+          en: "You Are Alone",
+          zh: "You Are Alone"
+        },
+        genre: {
+          ru: "Horror / Survival",
+          en: "Horror / Survival",
+          zh: "恐怖 / 生存"
+        },
+        description: {
+          ru: "ВЫ приехали к старому развалистому дому за альбомом, в котором 10 млн рублей, но не все так просто, ведь дом хранит в себе много тайн, и дедушка не даст тебе просто так взять этот альбом с деньгами.\n\nХодить — WASD\nВключить и выключить фонарик — LeftMouse\nВзаимодействие — клавиша E",
+          en: "You arrived at an old ruined house to get an album containing 10 million rubles, but it is not that simple. The house hides many secrets, and the grandfather will not let you take the album with money so easily.\n\nMove — WASD\nFlashlight on/off — LeftMouse\nInteract — E key",
+          zh: "你来到一座破旧的老房子，想拿到一本装有一千万卢布的相册，但事情并没有那么简单。房子里藏着许多秘密，爷爷也不会轻易让你把装着钱的相册带走。\n\n移动 — WASD\n开关手电筒 — LeftMouse\n互动 — E 键"
+        },
+        code: "ALONE-2026-DXG-HOUSE",
+        initials: "YA",
+        featuredImage: "https://i.ibb.co/KxrkMQmQ/Sfk-Rbj.png",
+        screenshots: [
+          "https://i.ibb.co/KxrkMQmQ/Sfk-Rbj.png",
+          "https://i.ibb.co/pjYqvmgC/6djt-P4.png",
+          "https://i.ibb.co/RTYNrw0q/omf-Wv.png",
+          "https://i.ibb.co/mF2nRXCg/G5g-Tjq.png",
+          "https://i.ibb.co/3yvsJC3P/Pyl6oo.png"
+        ]
       }
     ];
 
     const featuredId = "mishani";
     const sideIds = ["ozon", "shadow"];
-    const bottomIds = ["toilet", "skuf", "fear", "neighbor"];
+    const bottomIds = ["toilet", "skuf", "fear", "neighbor", "youarealone"];
+    const topRatedGameId = "ozon";
 
     const searchInput = document.getElementById("searchInput");
     const suggestionsBox = document.getElementById("suggestionsBox");
@@ -1041,6 +1232,15 @@
     const resultsList = document.getElementById("resultsList");
     const resultsCount = document.getElementById("resultsCount");
     const resultsTitle = document.getElementById("resultsTitle");
+
+    const topRatedSection = document.getElementById("topRatedSection");
+    const topRatedCard = document.getElementById("topRatedCard");
+    const topRatedBg = document.getElementById("topRatedBg");
+    const topRatedKicker = document.getElementById("topRatedKicker");
+    const topRatedName = document.getElementById("topRatedName");
+    const topRatedGenre = document.getElementById("topRatedGenre");
+    const topRatedScore = document.getElementById("topRatedScore");
+    const topRatedCount = document.getElementById("topRatedCount");
 
     const modal = document.getElementById("gameModal");
     const modalGenre = document.getElementById("modalGenre");
@@ -1074,11 +1274,25 @@
       codeLabel.textContent = t.codeLabel;
       codeNote.textContent = t.codeNote;
       emptyState.textContent = t.empty;
+      topRatedKicker.textContent = t.topRated;
       langToggle.textContent = currentLang.toUpperCase();
+      renderTopRated();
     }
 
     function getGame(id) {
       return games.find(game => game.id === id);
+    }
+
+    function renderTopRated() {
+      const t = ui[currentLang];
+      const game = getGame(topRatedGameId);
+      if (!game) return;
+
+      topRatedName.textContent = tGame(game.title);
+      topRatedGenre.textContent = tGame(game.genre);
+      topRatedScore.textContent = `${t.rating}: ${game.rating.toFixed(1)} / 5`;
+      topRatedCount.textContent = `${game.ratingCount} ${t.votes}`;
+      topRatedBg.style.backgroundImage = `url("${game.featuredImage}")`;
     }
 
     function makePoster(game) {
@@ -1170,9 +1384,11 @@
       catalogView.classList.remove("hidden");
       resultsView.classList.add("hidden");
       emptyState.classList.remove("show");
+      topRatedSection.style.display = "";
     }
 
     function showResultsView(filtered) {
+      topRatedSection.style.display = "none";
       catalogView.classList.add("hidden");
       resultsView.classList.remove("hidden");
 
@@ -1258,6 +1474,11 @@
       document.body.style.overflow = "";
       codeBox.classList.remove("show");
     }
+
+    topRatedCard.addEventListener("click", () => {
+      const game = getGame(topRatedGameId);
+      if (game) openModal(game);
+    });
 
     searchInput.addEventListener("input", () => {
       const value = searchInput.value.trim().toLowerCase();
@@ -1357,6 +1578,7 @@
 
     applyLanguage();
     renderCatalog(games);
+    renderTopRated();
     showCatalogView();
   </script>
 </body>
