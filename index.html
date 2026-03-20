@@ -20,6 +20,7 @@
       --muted: #a9a9a9;
       --yellow: #f3c316;
       --yellow-hover: #ffd84c;
+      --line: #111111;
     }
 
     body {
@@ -58,34 +59,34 @@
     .page {
       width: min(1200px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 16px 0 28px;
+      padding: 12px 0 28px;
     }
 
     .search-wrap {
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: 30;
       background: linear-gradient(180deg, rgba(11,11,11,0.98), rgba(11,11,11,0.88));
       padding-bottom: 12px;
       margin-bottom: 10px;
     }
 
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr 40px;
+      gap: 10px;
+      align-items: start;
+    }
+
     .search-box {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 14px;
+      min-height: 40px;
+      background: #ffffff;
+      border: 3px solid #111111;
+      border-radius: 0;
+      padding: 0 12px;
       position: relative;
-    }
-
-    .search-box svg {
-      width: 18px;
-      height: 18px;
-      fill: #7d7d7d;
-      flex-shrink: 0;
     }
 
     .search-box input {
@@ -93,21 +94,74 @@
       border: none;
       outline: none;
       background: transparent;
-      color: white;
-      font-size: 16px;
+      color: #111;
+      font-size: 18px;
+      font-weight: 500;
     }
 
     .search-box input::placeholder {
-      color: #7f7f7f;
+      color: #444;
+    }
+
+    .lang-box {
+      position: relative;
+      width: 40px;
+      height: 40px;
+    }
+
+    .lang-toggle {
+      width: 100%;
+      height: 100%;
+      border: 3px solid #111111;
+      background: #ffffff;
+      color: #111;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 140px;
+      background: #ffffff;
+      border: 3px solid #111111;
+      display: none;
+      z-index: 50;
+    }
+
+    .lang-menu.show {
+      display: block;
+    }
+
+    .lang-option {
+      width: 100%;
+      background: #ffffff;
+      color: #111;
+      border: none;
+      border-bottom: 2px solid #111111;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .lang-option:last-child {
+      border-bottom: none;
+    }
+
+    .lang-option:hover {
+      background: #efefef;
     }
 
     .suggestions {
       margin-top: 8px;
       background: #3f4658;
-      border-radius: 14px;
+      border-radius: 0;
       overflow: hidden;
       display: none;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 3px solid #111111;
     }
 
     .suggestions.show {
@@ -141,7 +195,6 @@
     .mini-poster {
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 10px;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -392,7 +445,6 @@
       margin-top: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 14px;
       padding: 18px;
       color: var(--muted);
       display: none;
@@ -423,7 +475,7 @@
       overflow-y: auto;
       background: #151515;
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      border-radius: 0;
     }
 
     .modal-head {
@@ -460,7 +512,6 @@
     .screen-box {
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 14px;
       overflow: hidden;
       background: linear-gradient(135deg, #1a1a1a, #303030);
       display: flex;
@@ -499,11 +550,11 @@
 
     .btn-yellow,
     .btn-dark {
-      border-radius: 12px;
+      border-radius: 0;
       padding: 13px 18px;
       font-weight: bold;
       font-size: 14px;
-      border: none;
+      border: 2px solid #111;
       cursor: pointer;
     }
 
@@ -527,7 +578,6 @@
       margin-top: 16px;
       background: #101010;
       border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
       padding: 16px;
     }
 
@@ -583,9 +633,19 @@
         padding: 10px 0 18px;
       }
 
+      .search-row {
+        grid-template-columns: 1fr 38px;
+        gap: 8px;
+      }
+
       .search-box {
-        border-radius: 12px;
-        padding: 11px 12px;
+        min-height: 38px;
+        padding: 0 10px;
+      }
+
+      .lang-box {
+        width: 38px;
+        height: 38px;
       }
 
       .suggestion-item {
@@ -636,16 +696,26 @@
 <body>
   <div class="page">
     <div class="search-wrap">
-      <div class="search-box">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"></path>
-        </svg>
-        <input type="text" id="searchInput" placeholder="Поиск" autocomplete="off" />
-      </div>
+      <div class="search-row">
+        <div>
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Поиск" autocomplete="off" />
+          </div>
 
-      <div class="suggestions" id="suggestionsBox">
-        <div class="suggestions-title">Search results</div>
-        <div id="suggestionsList"></div>
+          <div class="suggestions" id="suggestionsBox">
+            <div class="suggestions-title" id="suggestionsTitle">Search results</div>
+            <div id="suggestionsList"></div>
+          </div>
+        </div>
+
+        <div class="lang-box">
+          <button class="lang-toggle" id="langToggle" type="button">RU</button>
+          <div class="lang-menu" id="langMenu">
+            <button class="lang-option" type="button" data-lang="ru">Русский</button>
+            <button class="lang-option" type="button" data-lang="zh">中文</button>
+            <button class="lang-option" type="button" data-lang="en">English</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -662,15 +732,13 @@
 
     <div class="results-view hidden" id="resultsView">
       <div class="results-header">
-        <div class="results-title">Результаты поиска</div>
+        <div class="results-title" id="resultsTitle">Результаты поиска</div>
         <div class="results-count" id="resultsCount"></div>
       </div>
       <div class="results-list" id="resultsList"></div>
     </div>
 
-    <div class="empty-state" id="emptyState">
-      Ничего не найдено. Попробуй другой запрос.
-    </div>
+    <div class="empty-state" id="emptyState">Ничего не найдено. Попробуй другой запрос.</div>
   </div>
 
   <div class="modal" id="gameModal">
@@ -691,15 +759,56 @@
         </div>
 
         <div class="code-box" id="codeBox">
-          <div class="code-label">Код для лаунчера</div>
+          <div class="code-label" id="codeLabel">Код для лаунчера</div>
           <div class="code-value" id="modalCode"></div>
-          <div class="code-note">Используйте этот код в физическом лаунчере.</div>
+          <div class="code-note" id="codeNote">Используйте этот код в физическом лаунчере.</div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    const ui = {
+      ru: {
+        search: "Поиск",
+        suggestions: "Результаты поиска",
+        results: "Результаты поиска",
+        found: "Найдено",
+        open: "Открыть",
+        getCode: "Получить код",
+        close: "Закрыть",
+        codeLabel: "Код для лаунчера",
+        codeNote: "Используйте этот код в физическом лаунчере.",
+        empty: "Ничего не найдено. Попробуй другой запрос."
+      },
+      zh: {
+        search: "搜索",
+        suggestions: "搜索结果",
+        results: "搜索结果",
+        found: "找到",
+        open: "打开",
+        getCode: "获取代码",
+        close: "关闭",
+        codeLabel: "启动器代码",
+        codeNote: "请在实体启动器中使用此代码。",
+        empty: "未找到内容。请尝试其他搜索词。"
+      },
+      en: {
+        search: "Search",
+        suggestions: "Search results",
+        results: "Search results",
+        found: "Found",
+        open: "Open",
+        getCode: "Get code",
+        close: "Close",
+        codeLabel: "Launcher code",
+        codeNote: "Use this code in the physical launcher.",
+        empty: "Nothing found. Try another search."
+      }
+    };
+
+    let currentLang = "ru";
+
     const games = [
       {
         id: "mishani",
@@ -801,6 +910,7 @@
     const searchInput = document.getElementById("searchInput");
     const suggestionsBox = document.getElementById("suggestionsBox");
     const suggestionsList = document.getElementById("suggestionsList");
+    const suggestionsTitle = document.getElementById("suggestionsTitle");
     const leftColumn = document.getElementById("leftColumn");
     const rightColumn = document.getElementById("rightColumn");
     const bottomRow = document.getElementById("bottomRow");
@@ -809,6 +919,7 @@
     const resultsView = document.getElementById("resultsView");
     const resultsList = document.getElementById("resultsList");
     const resultsCount = document.getElementById("resultsCount");
+    const resultsTitle = document.getElementById("resultsTitle");
 
     const modal = document.getElementById("gameModal");
     const modalGenre = document.getElementById("modalGenre");
@@ -819,8 +930,26 @@
     const codeBox = document.getElementById("codeBox");
     const getCodeBtn = document.getElementById("getCodeBtn");
     const closeModalBtn = document.getElementById("closeModalBtn");
+    const codeLabel = document.getElementById("codeLabel");
+    const codeNote = document.getElementById("codeNote");
+
+    const langToggle = document.getElementById("langToggle");
+    const langMenu = document.getElementById("langMenu");
 
     let currentCode = "";
+
+    function applyLanguage() {
+      const t = ui[currentLang];
+      searchInput.placeholder = t.search;
+      suggestionsTitle.textContent = t.suggestions;
+      resultsTitle.textContent = t.results;
+      getCodeBtn.textContent = t.getCode;
+      closeModalBtn.textContent = t.close;
+      codeLabel.textContent = t.codeLabel;
+      codeNote.textContent = t.codeNote;
+      emptyState.textContent = t.empty;
+      langToggle.textContent = currentLang.toUpperCase();
+    }
 
     function getGame(id) {
       return games.find(game => game.id === id);
@@ -889,7 +1018,7 @@
     }
 
     function renderList(filtered = games) {
-      resultsCount.textContent = `Найдено: ${filtered.length}`;
+      resultsCount.textContent = `${ui[currentLang].found}: ${filtered.length}`;
 
       resultsList.innerHTML = filtered.map(game => `
         <button class="result-item" type="button" data-game-id="${game.id}">
@@ -899,7 +1028,7 @@
             <div class="result-genre">${game.genre}</div>
             <div class="result-desc">${game.description}</div>
           </div>
-          <div class="result-side">Открыть</div>
+          <div class="result-side">${ui[currentLang].open}</div>
         </button>
       `).join("");
 
@@ -1041,9 +1170,37 @@
       }
     });
 
+    langToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      langMenu.classList.toggle("show");
+    });
+
+    document.querySelectorAll(".lang-option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentLang = btn.dataset.lang;
+        applyLanguage();
+        langMenu.classList.remove("show");
+        const value = searchInput.value.trim().toLowerCase();
+        if (value) {
+          const filtered = games.filter(game => {
+            return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(value);
+          });
+          if (!resultsView.classList.contains("hidden")) {
+            showResultsView(filtered);
+          }
+          if (suggestionsBox.classList.contains("show")) {
+            renderSuggestions(value);
+          }
+        }
+      });
+    });
+
     document.addEventListener("click", (e) => {
       if (!e.target.closest(".search-wrap")) {
         suggestionsBox.classList.remove("show");
+      }
+      if (!e.target.closest(".lang-box")) {
+        langMenu.classList.remove("show");
       }
       if (e.target === modal) {
         closeModal();
@@ -1063,6 +1220,7 @@
       }
     });
 
+    applyLanguage();
     renderCatalog(games);
     showCatalogView();
   </script>
