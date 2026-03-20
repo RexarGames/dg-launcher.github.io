@@ -1,0 +1,1211 @@
+
+<p>&lt;!DOCTYPE html&gt;
+  <br>&lt;html lang="ru"&gt;
+  <br>&lt;head&gt;
+  <br>&nbsp; &lt;meta charset="UTF-8" /&gt;
+  <br>&nbsp; &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  <br>&nbsp; &lt;title&gt;REXAR GAMES Store&lt;/title&gt;
+  <br>&nbsp; &lt;style&gt;
+  <br>&nbsp; &nbsp; * {
+  <br>&nbsp; &nbsp; &nbsp; box-sizing: border-box;
+  <br>&nbsp; &nbsp; &nbsp; margin: 0;
+  <br>&nbsp; &nbsp; &nbsp; padding: 0;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; :root {
+  <br>&nbsp; &nbsp; &nbsp; --bg: #0b0b0b;
+  <br>&nbsp; &nbsp; &nbsp; --panel: #151515;
+  <br>&nbsp; &nbsp; &nbsp; --panel-2: #1c1c1c;
+  <br>&nbsp; &nbsp; &nbsp; --border: rgba(255,255,255,0.08);
+  <br>&nbsp; &nbsp; &nbsp; --text: #f2f2f2;
+  <br>&nbsp; &nbsp; &nbsp; --muted: #a9a9a9;
+  <br>&nbsp; &nbsp; &nbsp; --yellow: #f3c316;
+  <br>&nbsp; &nbsp; &nbsp; --yellow-hover: #ffd84c;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; body {
+  <br>&nbsp; &nbsp; &nbsp; font-family: Arial, Helvetica, sans-serif;
+  <br>&nbsp; &nbsp; &nbsp; background: var(--bg);
+  <br>&nbsp; &nbsp; &nbsp; color: var(--text);
+  <br>&nbsp; &nbsp; &nbsp; min-height: 100vh;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; html {
+  <br>&nbsp; &nbsp; &nbsp; scrollbar-color: #2a2a2a #0b0b0b;
+  <br>&nbsp; &nbsp; &nbsp; scrollbar-width: thin;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; html::-webkit-scrollbar,
+  <br>&nbsp; &nbsp; body::-webkit-scrollbar,
+  <br>&nbsp; &nbsp; .modal-box::-webkit-scrollbar {
+  <br>&nbsp; &nbsp; &nbsp; width: 10px;
+  <br>&nbsp; &nbsp; &nbsp; height: 10px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; html::-webkit-scrollbar-track,
+  <br>&nbsp; &nbsp; body::-webkit-scrollbar-track,
+  <br>&nbsp; &nbsp; .modal-box::-webkit-scrollbar-track {
+  <br>&nbsp; &nbsp; &nbsp; background: #0b0b0b;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; html::-webkit-scrollbar-thumb,
+  <br>&nbsp; &nbsp; body::-webkit-scrollbar-thumb,
+  <br>&nbsp; &nbsp; .modal-box::-webkit-scrollbar-thumb {
+  <br>&nbsp; &nbsp; &nbsp; background: #2a2a2a;
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 10px;
+  <br>&nbsp; &nbsp; &nbsp; border: 2px solid #0b0b0b;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .page {
+  <br>&nbsp; &nbsp; &nbsp; width: min(1200px, calc(100% - 28px));
+  <br>&nbsp; &nbsp; &nbsp; margin: 0 auto;
+  <br>&nbsp; &nbsp; &nbsp; padding: 16px 0 28px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .search-wrap {
+  <br>&nbsp; &nbsp; &nbsp; position: sticky;
+  <br>&nbsp; &nbsp; &nbsp; top: 0;
+  <br>&nbsp; &nbsp; &nbsp; z-index: 20;
+  <br>&nbsp; &nbsp; &nbsp; background: linear-gradient(180deg, rgba(11,11,11,0.98), rgba(11,11,11,0.88));
+  <br>&nbsp; &nbsp; &nbsp; padding-bottom: 12px;
+  <br>&nbsp; &nbsp; &nbsp; margin-bottom: 10px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .search-box {
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; gap: 10px;
+  <br>&nbsp; &nbsp; &nbsp; background: var(--panel);
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid var(--border);
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 14px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 12px 14px;
+  <br>&nbsp; &nbsp; &nbsp; position: relative;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .search-box svg {
+  <br>&nbsp; &nbsp; &nbsp; width: 18px;
+  <br>&nbsp; &nbsp; &nbsp; height: 18px;
+  <br>&nbsp; &nbsp; &nbsp; fill: #7d7d7d;
+  <br>&nbsp; &nbsp; &nbsp; flex-shrink: 0;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .search-box input {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; border: none;
+  <br>&nbsp; &nbsp; &nbsp; outline: none;
+  <br>&nbsp; &nbsp; &nbsp; background: transparent;
+  <br>&nbsp; &nbsp; &nbsp; color: white;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 16px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .search-box input::placeholder {
+  <br>&nbsp; &nbsp; &nbsp; color: #7f7f7f;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .suggestions {
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 8px;
+  <br>&nbsp; &nbsp; &nbsp; background: #3f4658;
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 14px;
+  <br>&nbsp; &nbsp; &nbsp; overflow: hidden;
+  <br>&nbsp; &nbsp; &nbsp; display: none;
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid rgba(255,255,255,0.08);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .suggestions.show {
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .suggestions-title {
+  <br>&nbsp; &nbsp; &nbsp; padding: 14px 16px 8px;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 13px;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; &nbsp; color: #eef3ff;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .suggestion-item {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; display: grid;
+  <br>&nbsp; &nbsp; &nbsp; grid-template-columns: 120px 1fr;
+  <br>&nbsp; &nbsp; &nbsp; gap: 12px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 10px 14px;
+  <br>&nbsp; &nbsp; &nbsp; text-align: left;
+  <br>&nbsp; &nbsp; &nbsp; background: transparent;
+  <br>&nbsp; &nbsp; &nbsp; border: none;
+  <br>&nbsp; &nbsp; &nbsp; color: white;
+  <br>&nbsp; &nbsp; &nbsp; cursor: pointer;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .suggestion-item:hover {
+  <br>&nbsp; &nbsp; &nbsp; background: rgba(255,255,255,0.06);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .mini-poster {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; aspect-ratio: 16 / 9;
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 10px;
+  <br>&nbsp; &nbsp; &nbsp; overflow: hidden;
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; background: linear-gradient(135deg, #101010, #2a2a2a);
+  <br>&nbsp; &nbsp; &nbsp; font-weight: 900;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 18px;
+  <br>&nbsp; &nbsp; &nbsp; letter-spacing: 0.08em;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .mini-poster.image {
+  <br>&nbsp; &nbsp; &nbsp; padding: 0;
+  <br>&nbsp; &nbsp; &nbsp; background: #111;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .mini-poster.image img {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; height: 100%;
+  <br>&nbsp; &nbsp; &nbsp; object-fit: cover;
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .mini-meta {
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; flex-direction: column;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; gap: 6px;
+  <br>&nbsp; &nbsp; &nbsp; min-width: 0;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .mini-title {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 20px;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.1;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .mini-sub {
+  <br>&nbsp; &nbsp; &nbsp; color: #d7dbea;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 14px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .catalog-view.hidden,
+  <br>&nbsp; &nbsp; .results-view.hidden {
+  <br>&nbsp; &nbsp; &nbsp; display: none;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .store-grid {
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 8px;
+  <br>&nbsp; &nbsp; &nbsp; display: grid;
+  <br>&nbsp; &nbsp; &nbsp; grid-template-columns: 2fr 1fr;
+  <br>&nbsp; &nbsp; &nbsp; gap: 10px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .left-column,
+  <br>&nbsp; &nbsp; .right-column,
+  <br>&nbsp; &nbsp; .bottom-row {
+  <br>&nbsp; &nbsp; &nbsp; display: grid;
+  <br>&nbsp; &nbsp; &nbsp; gap: 10px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .bottom-row {
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 10px;
+  <br>&nbsp; &nbsp; &nbsp; grid-template-columns: repeat(3, 1fr);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .game-tile {
+  <br>&nbsp; &nbsp; &nbsp; background: #e9e9e9;
+  <br>&nbsp; &nbsp; &nbsp; color: #111;
+  <br>&nbsp; &nbsp; &nbsp; border: 3px solid #1a1a1a;
+  <br>&nbsp; &nbsp; &nbsp; min-height: 180px;
+  <br>&nbsp; &nbsp; &nbsp; position: relative;
+  <br>&nbsp; &nbsp; &nbsp; overflow: hidden;
+  <br>&nbsp; &nbsp; &nbsp; cursor: pointer;
+  <br>&nbsp; &nbsp; &nbsp; transition: 0.15s ease;
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; flex-direction: column;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: flex-end;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .game-tile:hover {
+  <br>&nbsp; &nbsp; &nbsp; transform: translateY(-1px);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .game-tile.small {
+  <br>&nbsp; &nbsp; &nbsp; min-height: 125px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .game-tile.bottom {
+  <br>&nbsp; &nbsp; &nbsp; min-height: 125px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .tile-poster {
+  <br>&nbsp; &nbsp; &nbsp; position: absolute;
+  <br>&nbsp; &nbsp; &nbsp; inset: 0;
+  <br>&nbsp; &nbsp; &nbsp; background: linear-gradient(135deg, #161616, #2f2f2f);
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; font-size: clamp(18px, 3vw, 34px);
+  <br>&nbsp; &nbsp; &nbsp; font-weight: 900;
+  <br>&nbsp; &nbsp; &nbsp; letter-spacing: 0.08em;
+  <br>&nbsp; &nbsp; &nbsp; padding: 16px;
+  <br>&nbsp; &nbsp; &nbsp; text-align: center;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .tile-poster.image {
+  <br>&nbsp; &nbsp; &nbsp; padding: 0;
+  <br>&nbsp; &nbsp; &nbsp; background: #0f0f0f;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .tile-poster.image img {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; height: 100%;
+  <br>&nbsp; &nbsp; &nbsp; object-fit: cover;
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .tile-overlay {
+  <br>&nbsp; &nbsp; &nbsp; position: relative;
+  <br>&nbsp; &nbsp; &nbsp; z-index: 2;
+  <br>&nbsp; &nbsp; &nbsp; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.72));
+  <br>&nbsp; &nbsp; &nbsp; padding: 16px;
+  <br>&nbsp; &nbsp; &nbsp; min-height: 92px;
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; flex-direction: column;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: flex-end;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .tile-title {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 24px;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.08;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; &nbsp; color: #fff;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .game-tile.small .tile-title,
+  <br>&nbsp; &nbsp; .game-tile.bottom .tile-title {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 18px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .tile-sub {
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 6px;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 13px;
+  <br>&nbsp; &nbsp; &nbsp; color: #d3d3d3;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.4;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .results-header {
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: space-between;
+  <br>&nbsp; &nbsp; &nbsp; gap: 12px;
+  <br>&nbsp; &nbsp; &nbsp; margin: 8px 0 14px;
+  <br>&nbsp; &nbsp; &nbsp; flex-wrap: wrap;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .results-title {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 22px;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .results-count {
+  <br>&nbsp; &nbsp; &nbsp; color: var(--muted);
+  <br>&nbsp; &nbsp; &nbsp; font-size: 14px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .results-list {
+  <br>&nbsp; &nbsp; &nbsp; display: grid;
+  <br>&nbsp; &nbsp; &nbsp; gap: 10px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-item {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; display: grid;
+  <br>&nbsp; &nbsp; &nbsp; grid-template-columns: 220px 1fr auto;
+  <br>&nbsp; &nbsp; &nbsp; gap: 0;
+  <br>&nbsp; &nbsp; &nbsp; background: #101724;
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid rgba(255,255,255,0.05);
+  <br>&nbsp; &nbsp; &nbsp; color: white;
+  <br>&nbsp; &nbsp; &nbsp; text-align: left;
+  <br>&nbsp; &nbsp; &nbsp; overflow: hidden;
+  <br>&nbsp; &nbsp; &nbsp; cursor: pointer;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-item:hover {
+  <br>&nbsp; &nbsp; &nbsp; background: #142033;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-poster {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; height: 100%;
+  <br>&nbsp; &nbsp; &nbsp; min-height: 120px;
+  <br>&nbsp; &nbsp; &nbsp; background: #0b1020;
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; overflow: hidden;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: 900;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 28px;
+  <br>&nbsp; &nbsp; &nbsp; letter-spacing: 0.08em;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-poster.image img {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; height: 100%;
+  <br>&nbsp; &nbsp; &nbsp; object-fit: cover;
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-main {
+  <br>&nbsp; &nbsp; &nbsp; padding: 14px 16px;
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; flex-direction: column;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; gap: 8px;
+  <br>&nbsp; &nbsp; &nbsp; min-width: 0;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-name {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 22px;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.1;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-genre {
+  <br>&nbsp; &nbsp; &nbsp; color: #cfd7e8;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 14px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-desc {
+  <br>&nbsp; &nbsp; &nbsp; color: #aeb7c7;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 14px;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.5;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .result-side {
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; min-width: 130px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 14px;
+  <br>&nbsp; &nbsp; &nbsp; color: #d8deeb;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 14px;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .empty-state {
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 16px;
+  <br>&nbsp; &nbsp; &nbsp; background: var(--panel);
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid var(--border);
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 14px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 18px;
+  <br>&nbsp; &nbsp; &nbsp; color: var(--muted);
+  <br>&nbsp; &nbsp; &nbsp; display: none;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .empty-state.show {
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal {
+  <br>&nbsp; &nbsp; &nbsp; position: fixed;
+  <br>&nbsp; &nbsp; &nbsp; inset: 0;
+  <br>&nbsp; &nbsp; &nbsp; background: rgba(0,0,0,0.78);
+  <br>&nbsp; &nbsp; &nbsp; display: none;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; padding: 16px;
+  <br>&nbsp; &nbsp; &nbsp; z-index: 100;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal.active {
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-box {
+  <br>&nbsp; &nbsp; &nbsp; width: min(820px, 100%);
+  <br>&nbsp; &nbsp; &nbsp; max-height: calc(100vh - 32px);
+  <br>&nbsp; &nbsp; &nbsp; overflow-y: auto;
+  <br>&nbsp; &nbsp; &nbsp; background: #151515;
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid rgba(255,255,255,0.08);
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 18px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-head {
+  <br>&nbsp; &nbsp; &nbsp; padding: 18px;
+  <br>&nbsp; &nbsp; &nbsp; border-bottom: 1px solid rgba(255,255,255,0.06);
+  <br>&nbsp; &nbsp; &nbsp; background: #101010;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-genre {
+  <br>&nbsp; &nbsp; &nbsp; display: inline-block;
+  <br>&nbsp; &nbsp; &nbsp; background: #2a2a2a;
+  <br>&nbsp; &nbsp; &nbsp; color: #d4d4d4;
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 10px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 7px 10px;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 12px;
+  <br>&nbsp; &nbsp; &nbsp; margin-bottom: 12px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-title {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 30px;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.08;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: 900;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-screens {
+  <br>&nbsp; &nbsp; &nbsp; display: grid;
+  <br>&nbsp; &nbsp; &nbsp; grid-template-columns: repeat(2, 1fr);
+  <br>&nbsp; &nbsp; &nbsp; gap: 12px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 18px;
+  <br>&nbsp; &nbsp; &nbsp; background: #111111;
+  <br>&nbsp; &nbsp; &nbsp; border-bottom: 1px solid rgba(255,255,255,0.06);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .screen-box {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; aspect-ratio: 16 / 9;
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 14px;
+  <br>&nbsp; &nbsp; &nbsp; overflow: hidden;
+  <br>&nbsp; &nbsp; &nbsp; background: linear-gradient(135deg, #1a1a1a, #303030);
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; align-items: center;
+  <br>&nbsp; &nbsp; &nbsp; justify-content: center;
+  <br>&nbsp; &nbsp; &nbsp; color: #d9d9d9;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 18px;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; &nbsp; text-align: center;
+  <br>&nbsp; &nbsp; &nbsp; padding: 12px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .screen-box img {
+  <br>&nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; height: 100%;
+  <br>&nbsp; &nbsp; &nbsp; object-fit: cover;
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-body {
+  <br>&nbsp; &nbsp; &nbsp; padding: 18px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-body p {
+  <br>&nbsp; &nbsp; &nbsp; color: #b5b5b5;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.7;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 15px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .modal-buttons {
+  <br>&nbsp; &nbsp; &nbsp; display: flex;
+  <br>&nbsp; &nbsp; &nbsp; gap: 10px;
+  <br>&nbsp; &nbsp; &nbsp; flex-wrap: wrap;
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 18px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .btn-yellow,
+  <br>&nbsp; &nbsp; .btn-dark {
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 12px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 13px 18px;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 14px;
+  <br>&nbsp; &nbsp; &nbsp; border: none;
+  <br>&nbsp; &nbsp; &nbsp; cursor: pointer;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .btn-yellow {
+  <br>&nbsp; &nbsp; &nbsp; background: var(--yellow);
+  <br>&nbsp; &nbsp; &nbsp; color: #161616;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .btn-yellow:hover {
+  <br>&nbsp; &nbsp; &nbsp; background: var(--yellow-hover);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .btn-dark {
+  <br>&nbsp; &nbsp; &nbsp; background: #252525;
+  <br>&nbsp; &nbsp; &nbsp; color: #f0f0f0;
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid rgba(255,255,255,0.06);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .code-box {
+  <br>&nbsp; &nbsp; &nbsp; display: none;
+  <br>&nbsp; &nbsp; &nbsp; margin-top: 16px;
+  <br>&nbsp; &nbsp; &nbsp; background: #101010;
+  <br>&nbsp; &nbsp; &nbsp; border: 1px solid rgba(255,255,255,0.06);
+  <br>&nbsp; &nbsp; &nbsp; border-radius: 14px;
+  <br>&nbsp; &nbsp; &nbsp; padding: 16px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .code-box.show {
+  <br>&nbsp; &nbsp; &nbsp; display: block;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .code-label {
+  <br>&nbsp; &nbsp; &nbsp; font-size: 13px;
+  <br>&nbsp; &nbsp; &nbsp; color: #d7d7d7;
+  <br>&nbsp; &nbsp; &nbsp; margin-bottom: 8px;
+  <br>&nbsp; &nbsp; &nbsp; font-weight: bold;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .code-value {
+  <br>&nbsp; &nbsp; &nbsp; font-family: "Courier New", monospace;
+  <br>&nbsp; &nbsp; &nbsp; color: #fff0a4;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 16px;
+  <br>&nbsp; &nbsp; &nbsp; letter-spacing: 0.08em;
+  <br>&nbsp; &nbsp; &nbsp; word-break: break-all;
+  <br>&nbsp; &nbsp; &nbsp; margin-bottom: 8px;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; .code-note {
+  <br>&nbsp; &nbsp; &nbsp; color: #8f8f8f;
+  <br>&nbsp; &nbsp; &nbsp; font-size: 13px;
+  <br>&nbsp; &nbsp; &nbsp; line-height: 1.55;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; @media (max-width: 860px) {
+  <br>&nbsp; &nbsp; &nbsp; .store-grid {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: 1fr;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .bottom-row {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: repeat(2, 1fr);
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .result-item {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: 180px 1fr;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .result-side {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-column: 1 / -1;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; justify-content: flex-start;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; padding-top: 0;
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; @media (max-width: 640px) {
+  <br>&nbsp; &nbsp; &nbsp; .page {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; width: min(100% - 16px, 1200px);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; padding: 10px 0 18px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .search-box {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; border-radius: 12px;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; padding: 11px 12px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .suggestion-item {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: 92px 1fr;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .mini-title {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; font-size: 16px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .bottom-row {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: 1fr;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .game-tile,
+  <br>&nbsp; &nbsp; &nbsp; .game-tile.small,
+  <br>&nbsp; &nbsp; &nbsp; .game-tile.bottom {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; min-height: 145px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .tile-title {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; font-size: 20px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .result-item {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: 1fr;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .result-poster {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; min-height: 150px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .modal-title {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; font-size: 24px;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .modal-screens {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; grid-template-columns: 1fr;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; .btn-yellow,
+  <br>&nbsp; &nbsp; &nbsp; .btn-dark {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; width: 100%;
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; }
+  <br>&nbsp; &lt;/style&gt;
+  <br>&lt;/head&gt;
+  <br>&lt;body&gt;
+  <br>&nbsp; &lt;div class="page"&gt;
+  <br>&nbsp; &nbsp; &lt;div class="search-wrap"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;div class="search-box"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;svg viewBox="0 0 24 24" aria-hidden="true"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"&gt;&lt;/path&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/svg&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;input type="text" id="searchInput" placeholder="Поиск" autocomplete="off" /&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &lt;div class="suggestions" id="suggestionsBox"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="suggestions-title"&gt;Search results&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="suggestionsList"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &lt;div class="catalog-view" id="catalogView"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;div id="catalog"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="store-grid"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="left-column" id="leftColumn"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="right-column" id="rightColumn"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="bottom-row" id="bottomRow"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &lt;div class="results-view hidden" id="resultsView"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;div class="results-header"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="results-title"&gt;Результаты поиска&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="results-count" id="resultsCount"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;div class="results-list" id="resultsList"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &lt;div class="empty-state" id="emptyState"&gt;
+  <br>&nbsp; &nbsp; &nbsp; Ничего не найдено. Попробуй другой запрос.
+  <br>&nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &lt;div class="modal" id="gameModal"&gt;
+  <br>&nbsp; &nbsp; &lt;div class="modal-box"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;div class="modal-head"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="modal-genre" id="modalGenre"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="modal-title" id="modalTitle"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &lt;div class="modal-screens" id="modalScreens"&gt;&lt;/div&gt;</p>
+
+<p>&nbsp; &nbsp; &nbsp; &lt;div class="modal-body"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;p id="modalDescription"&gt;&lt;/p&gt;
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="modal-buttons"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button class="btn-yellow" id="getCodeBtn" type="button"&gt;Получить код&lt;/button&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;button class="btn-dark" id="closeModalBtn" type="button"&gt;Закрыть&lt;/button&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="code-box" id="codeBox"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="code-label"&gt;Код для лаунчера&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="code-value" id="modalCode"&gt;&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="code-note"&gt;Используйте этот код в физическом лаунчере.&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &lt;/div&gt;
+</p>
+
+<p>&nbsp; &lt;script&gt;
+  <br>&nbsp; &nbsp; const games = [
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "mishani",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Побег от Мишани Литвина",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Survival / Horror",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Вы гуляли с друзьями, пили энергетик и смотрели TikTok. Внезапно в ленте начали появляться только видео с Литвином. Допив напиток, вы огляделись, но друзей рядом не было, а потом очнулись в подвале дома Литвина. Главная задача — выбраться и не попасться ему на глаза. Проект находится в разработке, а по атмосфере это одиночный survival horror от первого лица.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "MISHANI-2026-DXG-PLAY",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "ML",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; featuredImage: "https://i.ibb.co/gbwhjPKQ/IMG-2110.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: [
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/W4tgnr7W/c1A-o0.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/99jP2BBK/b-XSv0o.png"
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; ]
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "ozon",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Ozon Simulator (Demo)",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Simulation",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Демо-игра для Windows, в которой предлагается почувствовать себя работником Ozon. Проект сделан в формате простого симулятора с видом от первого лица. По самой странице это ранняя демо-версия, скорее как эксперимент или заготовка под более крупную идею.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "OZON-2026-DXG-DEMO",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "OZ",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; featuredImage: "https://i.ibb.co/qLmKptvD/Jd0Ajq.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: [
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/qLmKptvD/Jd0Ajq.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/JWL98Y7k/ie8Mrm.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/QFM8tCYH/EEyzgc.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/Cstrgs4X/BDf-F1.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/s9fX5szR/d7Soe1.png"
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; ]
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "shadow",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "The Shadow of the Ruined",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Action / Puzzle / Shooter",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "События игры разворачиваются в альтернативном мире на территории Боркинса, в Чернобыльской зоне отчуждения. Это проект для Windows с упором на мрачную атмосферу, исследование, стрельбу и элементы головоломок. Игра находится в разработке и выглядит как сюжетный одиночный хоррор-экшен.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "SHADOW-2026-DXG-RUIN",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "SR",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; featuredImage: "https://i.ibb.co/bMhSPMb0/2LVgn2.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: [
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/bMhSPMb0/2LVgn2.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/67MjGB9k/XQf-Q0P.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/Xfddz4m8/z-A8ec-S.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/TDqhcKvW/Q2k-BVn.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/HpNHSB1S/Xt-jcp.png",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "https://i.ibb.co/7JyjjXq3/u-MGj-OQ.png"
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; ]
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "toilet",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Симулятор Сидения на туалете",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Action / Role Playing",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Необычный и шуточный проект от REXAR GAMES. На странице у игры указаны жанры Action и Role Playing, а также поддержка русского языка. По оформлению это скорее юмористическая игра-эксперимент с простым 3D-геймплеем и нестандартной идеей.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "TOILET-2026-DXG-SIT",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "СТ",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: []
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "skuf",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Побег от Скуфа",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Simulation / Puzzle",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Игра для Windows со статусом Prototype. По тегам и подаче это проект с элементами хоррора, скрытности и побега. Основной акцент сделан на напряжённой атмосфере, перемещении по локации и попытке выбраться, не попавшись.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "SKUF-2026-DXG-ESC",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "СК",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: []
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "re2",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Resident Evil 2 Remake By Unity",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Horror / Action",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Фанатский проект по мотивам Resident Evil 2, сделанный на Unity. Это downloadable horror-проект для Windows, который сейчас помечен как закрытый или отменённый. В магазине его можно оставить как архивную игру студии.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "RE2-2026-DXG-UNITY",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "RE2",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: []
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "fear",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Fear mansion: escape",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Horror",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Хоррор-проект с упором на побег и тревожную атмосферу. Сейчас по нему мало открытой информации, поэтому описание лучше держать нейтральным: это мрачная игра в жанре horror, связанная с исследованием и попыткой выбраться из опасного места.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "FEAR-2026-DXG-MANSION",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "FM",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: []
+  <br>&nbsp; &nbsp; &nbsp; },
+  <br>&nbsp; &nbsp; &nbsp; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; id: "neighbor",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; title: "Hello Neighbor(Alpha2.7)",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; genre: "Stealth Horror",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; description: "Проект в стиле скрытного хоррора, вдохновлённый Hello Neighbor. По подаче это альфа-версия с акцентом на скрытность, наблюдение за противником и осторожное исследование окружения. В магазине игру можно показывать как завершённый экспериментальный проект.",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; code: "HN-2026-DXG-ALPHA",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; initials: "HN",
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; screenshots: []
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; ];
+</p>
+
+<p>&nbsp; &nbsp; const featuredId = "mishani";
+  <br>&nbsp; &nbsp; const sideIds = ["ozon", "shadow"];
+  <br>&nbsp; &nbsp; const bottomIds = ["toilet", "skuf", "re2", "fear", "neighbor"];
+</p>
+
+<p>&nbsp; &nbsp; const searchInput = document.getElementById("searchInput");
+  <br>&nbsp; &nbsp; const suggestionsBox = document.getElementById("suggestionsBox");
+  <br>&nbsp; &nbsp; const suggestionsList = document.getElementById("suggestionsList");
+  <br>&nbsp; &nbsp; const leftColumn = document.getElementById("leftColumn");
+  <br>&nbsp; &nbsp; const rightColumn = document.getElementById("rightColumn");
+  <br>&nbsp; &nbsp; const bottomRow = document.getElementById("bottomRow");
+  <br>&nbsp; &nbsp; const emptyState = document.getElementById("emptyState");
+  <br>&nbsp; &nbsp; const catalogView = document.getElementById("catalogView");
+  <br>&nbsp; &nbsp; const resultsView = document.getElementById("resultsView");
+  <br>&nbsp; &nbsp; const resultsList = document.getElementById("resultsList");
+  <br>&nbsp; &nbsp; const resultsCount = document.getElementById("resultsCount");
+</p>
+
+<p>&nbsp; &nbsp; const modal = document.getElementById("gameModal");
+  <br>&nbsp; &nbsp; const modalGenre = document.getElementById("modalGenre");
+  <br>&nbsp; &nbsp; const modalTitle = document.getElementById("modalTitle");
+  <br>&nbsp; &nbsp; const modalScreens = document.getElementById("modalScreens");
+  <br>&nbsp; &nbsp; const modalDescription = document.getElementById("modalDescription");
+  <br>&nbsp; &nbsp; const modalCode = document.getElementById("modalCode");
+  <br>&nbsp; &nbsp; const codeBox = document.getElementById("codeBox");
+  <br>&nbsp; &nbsp; const getCodeBtn = document.getElementById("getCodeBtn");
+  <br>&nbsp; &nbsp; const closeModalBtn = document.getElementById("closeModalBtn");
+</p>
+
+<p>&nbsp; &nbsp; let currentCode = "";</p>
+
+<p>&nbsp; &nbsp; function getGame(id) {
+  <br>&nbsp; &nbsp; &nbsp; return games.find(game =&gt; game.id === id);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function makePoster(game) {
+  <br>&nbsp; &nbsp; &nbsp; if (game.featuredImage) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="tile-poster image"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;img src="${game.featuredImage}" alt="${game.title}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; `;
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; &nbsp; return `&lt;div class="tile-poster"&gt;${game.initials}&lt;/div&gt;`;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function makeMiniPoster(game) {
+  <br>&nbsp; &nbsp; &nbsp; if (game.featuredImage) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="mini-poster image"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;img src="${game.featuredImage}" alt="${game.title}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; `;
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; &nbsp; return `&lt;div class="mini-poster"&gt;${game.initials}&lt;/div&gt;`;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function makeResultPoster(game) {
+  <br>&nbsp; &nbsp; &nbsp; if (game.featuredImage) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="result-poster image"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;img src="${game.featuredImage}" alt="${game.title}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; `;
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; &nbsp; return `&lt;div class="result-poster"&gt;${game.initials}&lt;/div&gt;`;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function createTile(game, extraClass = "") {
+  <br>&nbsp; &nbsp; &nbsp; return `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;button class="game-tile ${extraClass}" type="button" data-game-id="${game.id}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ${makePoster(game)}
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="tile-overlay"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="tile-title"&gt;${game.title}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="tile-sub"&gt;${game.genre}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/button&gt;
+  <br>&nbsp; &nbsp; &nbsp; `;
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function renderCatalog(filtered = games) {
+  <br>&nbsp; &nbsp; &nbsp; const featured = filtered.find(g =&gt; g.id === featuredId);
+  <br>&nbsp; &nbsp; &nbsp; const sides = sideIds.map(getGame).filter(Boolean).filter(g =&gt; filtered.some(f =&gt; f.id === g.id));
+  <br>&nbsp; &nbsp; &nbsp; const bottoms = bottomIds.map(getGame).filter(Boolean).filter(g =&gt; filtered.some(f =&gt; f.id === g.id));
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; leftColumn.innerHTML = featured ? createTile(featured, "") : "";
+  <br>&nbsp; &nbsp; &nbsp; rightColumn.innerHTML = sides.map(game =&gt; createTile(game, "small")).join("");
+  <br>&nbsp; &nbsp; &nbsp; bottomRow.innerHTML = bottoms.map(game =&gt; createTile(game, "bottom")).join("");
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; document.querySelectorAll(".game-tile").forEach(btn =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; btn.addEventListener("click", () =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const game = getGame(btn.dataset.gameId);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (game) openModal(game);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; });
+  <br>&nbsp; &nbsp; &nbsp; });
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function renderList(filtered = games) {
+  <br>&nbsp; &nbsp; &nbsp; resultsCount.textContent = `Найдено: ${filtered.length}`;
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; resultsList.innerHTML = filtered.map(game =&gt; `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;button class="result-item" type="button" data-game-id="${game.id}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ${makeResultPoster(game)}
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="result-main"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="result-name"&gt;${game.title}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="result-genre"&gt;${game.genre}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="result-desc"&gt;${game.description}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="result-side"&gt;Открыть&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/button&gt;
+  <br>&nbsp; &nbsp; &nbsp; `).join("");
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; document.querySelectorAll(".result-item").forEach(btn =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; btn.addEventListener("click", () =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const game = getGame(btn.dataset.gameId);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (game) openModal(game);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; });
+  <br>&nbsp; &nbsp; &nbsp; });
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function showCatalogView() {
+  <br>&nbsp; &nbsp; &nbsp; catalogView.classList.remove("hidden");
+  <br>&nbsp; &nbsp; &nbsp; resultsView.classList.add("hidden");
+  <br>&nbsp; &nbsp; &nbsp; emptyState.classList.remove("show");
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function showResultsView(filtered) {
+  <br>&nbsp; &nbsp; &nbsp; catalogView.classList.add("hidden");
+  <br>&nbsp; &nbsp; &nbsp; resultsView.classList.remove("hidden");
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; if (!filtered.length) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; resultsView.classList.add("hidden");
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; emptyState.classList.add("show");
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; emptyState.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; renderList(filtered);
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function renderSuggestions(query) {
+  <br>&nbsp; &nbsp; &nbsp; const q = query.trim().toLowerCase();
+  <br>&nbsp; &nbsp; &nbsp; if (!q) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; suggestionsBox.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; suggestionsList.innerHTML = "";
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; const found = games.filter(game =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(q);
+  <br>&nbsp; &nbsp; &nbsp; }).slice(0, 5);
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; if (!found.length) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; suggestionsBox.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; suggestionsList.innerHTML = "";
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; suggestionsList.innerHTML = found.map(game =&gt; `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;button class="suggestion-item" type="button" data-game-id="${game.id}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ${makeMiniPoster(game)}
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="mini-meta"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="mini-title"&gt;${game.title}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="mini-sub"&gt;${game.genre}&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/button&gt;
+  <br>&nbsp; &nbsp; &nbsp; `).join("");
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; suggestionsBox.classList.add("show");</p>
+
+<p>&nbsp; &nbsp; &nbsp; suggestionsList.querySelectorAll(".suggestion-item").forEach(item =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; item.addEventListener("click", () =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; const game = getGame(item.dataset.gameId);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!game) return;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; searchInput.value = game.title;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; suggestionsBox.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showResultsView([game]);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; });
+  <br>&nbsp; &nbsp; &nbsp; });
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function openModal(game) {
+  <br>&nbsp; &nbsp; &nbsp; modalGenre.textContent = game.genre;
+  <br>&nbsp; &nbsp; &nbsp; modalTitle.textContent = game.title;
+  <br>&nbsp; &nbsp; &nbsp; modalDescription.textContent = game.description;
+  <br>&nbsp; &nbsp; &nbsp; modalCode.textContent = game.code;
+  <br>&nbsp; &nbsp; &nbsp; currentCode = game.code;
+  <br>&nbsp; &nbsp; &nbsp; codeBox.classList.remove("show");
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; if (game.screenshots &amp;&amp; game.screenshots.length) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; modalScreens.innerHTML = game.screenshots.map(src =&gt; `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="screen-box"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;img src="${src}" alt="${game.title}"&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; `).join("");
+  <br>&nbsp; &nbsp; &nbsp; } else {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; modalScreens.innerHTML = `
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="screen-box"&gt;${game.initials} 1&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div class="screen-box"&gt;${game.initials} 2&lt;/div&gt;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; `;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; modal.classList.add("active");
+  <br>&nbsp; &nbsp; &nbsp; document.body.style.overflow = "hidden";
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; function closeModal() {
+  <br>&nbsp; &nbsp; &nbsp; modal.classList.remove("active");
+  <br>&nbsp; &nbsp; &nbsp; document.body.style.overflow = "";
+  <br>&nbsp; &nbsp; &nbsp; codeBox.classList.remove("show");
+  <br>&nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; searchInput.addEventListener("input", () =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; const value = searchInput.value.trim().toLowerCase();
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; renderSuggestions(value);</p>
+
+<p>&nbsp; &nbsp; &nbsp; if (!value) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; showCatalogView();
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; renderCatalog(games);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return;
+  <br>&nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; const filtered = games.filter(game =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(value);
+  <br>&nbsp; &nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; showResultsView(filtered);
+  <br>&nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; searchInput.addEventListener("keydown", (e) =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; if (e.key === "Enter") {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; const value = searchInput.value.trim().toLowerCase();
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; if (!value) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; showCatalogView();
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; renderCatalog(games);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; suggestionsBox.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; }
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; const filtered = games.filter(game =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(value);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp; showResultsView(filtered);
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; suggestionsBox.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; document.addEventListener("click", (e) =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; if (!e.target.closest(".search-wrap")) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; suggestionsBox.classList.remove("show");
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; &nbsp; if (e.target === modal) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; closeModal();
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; getCodeBtn.addEventListener("click", () =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; if (!currentCode) return;
+  <br>&nbsp; &nbsp; &nbsp; codeBox.classList.add("show");
+  <br>&nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; closeModalBtn.addEventListener("click", closeModal);</p>
+
+<p>&nbsp; &nbsp; document.addEventListener("keydown", (e) =&gt; {
+  <br>&nbsp; &nbsp; &nbsp; if (e.key === "Escape" &amp;&amp; modal.classList.contains("active")) {
+  <br>&nbsp; &nbsp; &nbsp; &nbsp; closeModal();
+  <br>&nbsp; &nbsp; &nbsp; }
+  <br>&nbsp; &nbsp; });
+</p>
+
+<p>&nbsp; &nbsp; renderCatalog(games);
+  <br>&nbsp; &nbsp; showCatalogView();
+  <br>&nbsp; &lt;/script&gt;
+  <br>&lt;/body&gt;
+  <br>&lt;/html&gt;
+</p>
