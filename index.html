@@ -1,3 +1,8 @@
+Понял. Оставил прежний дизайн, цвет и закругление. Квадрат справа теперь в том же стиле, что и поиск. Перевод интерфейса тоже работает: **Русский / 中文 / English**.
+
+Вот полный код:
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -20,7 +25,6 @@
       --muted: #a9a9a9;
       --yellow: #f3c316;
       --yellow-hover: #ffd84c;
-      --line: #111111;
     }
 
     body {
@@ -59,7 +63,7 @@
     .page {
       width: min(1200px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 12px 0 28px;
+      padding: 16px 0 28px;
     }
 
     .search-wrap {
@@ -73,7 +77,7 @@
 
     .search-row {
       display: grid;
-      grid-template-columns: 1fr 40px;
+      grid-template-columns: 1fr 52px;
       gap: 10px;
       align-items: start;
     }
@@ -81,12 +85,20 @@
     .search-box {
       display: flex;
       align-items: center;
-      min-height: 40px;
-      background: #ffffff;
-      border: 3px solid #111111;
-      border-radius: 0;
-      padding: 0 12px;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
       position: relative;
+      min-height: 48px;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      fill: #7d7d7d;
+      flex-shrink: 0;
     }
 
     .search-box input {
@@ -94,28 +106,28 @@
       border: none;
       outline: none;
       background: transparent;
-      color: #111;
-      font-size: 18px;
-      font-weight: 500;
+      color: white;
+      font-size: 16px;
     }
 
     .search-box input::placeholder {
-      color: #444;
+      color: #7f7f7f;
     }
 
     .lang-box {
       position: relative;
-      width: 40px;
-      height: 40px;
+      min-width: 52px;
+      height: 48px;
     }
 
     .lang-toggle {
       width: 100%;
       height: 100%;
-      border: 3px solid #111111;
-      background: #ffffff;
-      color: #111;
-      font-size: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: white;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -125,8 +137,10 @@
       top: calc(100% + 8px);
       right: 0;
       min-width: 140px;
-      background: #ffffff;
-      border: 3px solid #111111;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
       display: none;
       z-index: 50;
     }
@@ -137,13 +151,13 @@
 
     .lang-option {
       width: 100%;
-      background: #ffffff;
-      color: #111;
+      background: transparent;
+      color: white;
       border: none;
-      border-bottom: 2px solid #111111;
-      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 14px;
       text-align: left;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
     }
 
@@ -152,16 +166,16 @@
     }
 
     .lang-option:hover {
-      background: #efefef;
+      background: rgba(255,255,255,0.06);
     }
 
     .suggestions {
       margin-top: 8px;
       background: #3f4658;
-      border-radius: 0;
+      border-radius: 14px;
       overflow: hidden;
       display: none;
-      border: 3px solid #111111;
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     .suggestions.show {
@@ -195,6 +209,7 @@
     .mini-poster {
       width: 100%;
       aspect-ratio: 16 / 9;
+      border-radius: 10px;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -445,6 +460,7 @@
       margin-top: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
+      border-radius: 14px;
       padding: 18px;
       color: var(--muted);
       display: none;
@@ -475,7 +491,7 @@
       overflow-y: auto;
       background: #151515;
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 0;
+      border-radius: 18px;
     }
 
     .modal-head {
@@ -512,6 +528,7 @@
     .screen-box {
       width: 100%;
       aspect-ratio: 16 / 9;
+      border-radius: 14px;
       overflow: hidden;
       background: linear-gradient(135deg, #1a1a1a, #303030);
       display: flex;
@@ -550,11 +567,11 @@
 
     .btn-yellow,
     .btn-dark {
-      border-radius: 0;
+      border-radius: 12px;
       padding: 13px 18px;
       font-weight: bold;
       font-size: 14px;
-      border: 2px solid #111;
+      border: none;
       cursor: pointer;
     }
 
@@ -578,6 +595,7 @@
       margin-top: 16px;
       background: #101010;
       border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
       padding: 16px;
     }
 
@@ -634,18 +652,18 @@
       }
 
       .search-row {
-        grid-template-columns: 1fr 38px;
+        grid-template-columns: 1fr 48px;
         gap: 8px;
       }
 
       .search-box {
-        min-height: 38px;
-        padding: 0 10px;
+        min-height: 46px;
+        padding: 11px 12px;
       }
 
       .lang-box {
-        width: 38px;
-        height: 38px;
+        min-width: 48px;
+        height: 46px;
       }
 
       .suggestion-item {
@@ -699,6 +717,9 @@
       <div class="search-row">
         <div>
           <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"></path>
+            </svg>
             <input type="text" id="searchInput" placeholder="Поиск" autocomplete="off" />
           </div>
 
@@ -1226,3 +1247,4 @@
   </script>
 </body>
 </html>
+```
