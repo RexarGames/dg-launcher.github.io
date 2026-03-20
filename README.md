@@ -1,1 +1,1070 @@
-ДГ
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REXAR GAMES Store</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b0b0b;
+      --panel: #151515;
+      --panel-2: #1c1c1c;
+      --border: rgba(255,255,255,0.08);
+      --text: #f2f2f2;
+      --muted: #a9a9a9;
+      --yellow: #f3c316;
+      --yellow-hover: #ffd84c;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    html {
+      scrollbar-color: #2a2a2a #0b0b0b;
+      scrollbar-width: thin;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    .modal-box::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    .modal-box::-webkit-scrollbar-track {
+      background: #0b0b0b;
+    }
+
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    .modal-box::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 10px;
+      border: 2px solid #0b0b0b;
+    }
+
+    .page {
+      width: min(1200px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 16px 0 28px;
+    }
+
+    .search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(11,11,11,0.98), rgba(11,11,11,0.88));
+      padding-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      position: relative;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      fill: #7d7d7d;
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+    }
+
+    .search-box input::placeholder {
+      color: #7f7f7f;
+    }
+
+    .suggestions {
+      margin-top: 8px;
+      background: #3f4658;
+      border-radius: 14px;
+      overflow: hidden;
+      display: none;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .suggestions.show {
+      display: block;
+    }
+
+    .suggestions-title {
+      padding: 14px 16px 8px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #eef3ff;
+    }
+
+    .suggestion-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      padding: 10px 14px;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .mini-poster {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #101010, #2a2a2a);
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+    }
+
+    .mini-poster.image {
+      padding: 0;
+      background: #111;
+    }
+
+    .mini-poster.image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mini-meta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .mini-title {
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: bold;
+    }
+
+    .mini-sub {
+      color: #d7dbea;
+      font-size: 14px;
+    }
+
+    .catalog-view.hidden,
+    .results-view.hidden {
+      display: none;
+    }
+
+    .store-grid {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 10px;
+    }
+
+    .left-column,
+    .right-column,
+    .bottom-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bottom-row {
+      margin-top: 10px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .game-tile {
+      background: #e9e9e9;
+      color: #111;
+      border: 3px solid #1a1a1a;
+      min-height: 180px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .game-tile:hover {
+      transform: translateY(-1px);
+    }
+
+    .game-tile.small {
+      min-height: 125px;
+    }
+
+    .game-tile.bottom {
+      min-height: 125px;
+    }
+
+    .tile-poster {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #161616, #2f2f2f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(18px, 3vw, 34px);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .tile-poster.image {
+      padding: 0;
+      background: #0f0f0f;
+    }
+
+    .tile-poster.image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tile-overlay {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.72));
+      padding: 16px;
+      min-height: 92px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .tile-title {
+      font-size: 24px;
+      line-height: 1.08;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .game-tile.small .tile-title,
+    .game-tile.bottom .tile-title {
+      font-size: 18px;
+    }
+
+    .tile-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #d3d3d3;
+      line-height: 1.4;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .results-title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .results-count {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .results-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      gap: 0;
+      background: #101724;
+      border: 1px solid rgba(255,255,255,0.05);
+      color: white;
+      text-align: left;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .result-item:hover {
+      background: #142033;
+    }
+
+    .result-poster {
+      width: 100%;
+      height: 100%;
+      min-height: 120px;
+      background: #0b1020;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-weight: 900;
+      font-size: 28px;
+      letter-spacing: 0.08em;
+    }
+
+    .result-poster.image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .result-main {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .result-name {
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: bold;
+    }
+
+    .result-genre {
+      color: #cfd7e8;
+      font-size: 14px;
+    }
+
+    .result-desc {
+      color: #aeb7c7;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .result-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 130px;
+      padding: 14px;
+      color: #d8deeb;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .empty-state {
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      color: var(--muted);
+      display: none;
+    }
+
+    .empty-state.show {
+      display: block;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(820px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      background: #151515;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+    }
+
+    .modal-head {
+      padding: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: #101010;
+    }
+
+    .modal-genre {
+      display: inline-block;
+      background: #2a2a2a;
+      color: #d4d4d4;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 30px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .modal-screens {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 18px;
+      background: #111111;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .screen-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a1a, #303030);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d9d9d9;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .screen-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .modal-body p {
+      color: #b5b5b5;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn-yellow,
+    .btn-dark {
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-yellow {
+      background: var(--yellow);
+      color: #161616;
+    }
+
+    .btn-yellow:hover {
+      background: var(--yellow-hover);
+    }
+
+    .btn-dark {
+      background: #252525;
+      color: #f0f0f0;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .code-box {
+      display: none;
+      margin-top: 16px;
+      background: #101010;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .code-box.show {
+      display: block;
+    }
+
+    .code-label {
+      font-size: 13px;
+      color: #d7d7d7;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .code-value {
+      font-family: "Courier New", monospace;
+      color: #fff0a4;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .code-note {
+      color: #8f8f8f;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 860px) {
+      .store-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .result-item {
+        grid-template-columns: 180px 1fr;
+      }
+
+      .result-side {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        padding-top: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 16px, 1200px);
+        padding: 10px 0 18px;
+      }
+
+      .search-box {
+        border-radius: 12px;
+        padding: 11px 12px;
+      }
+
+      .suggestion-item {
+        grid-template-columns: 92px 1fr;
+      }
+
+      .mini-title {
+        font-size: 16px;
+      }
+
+      .bottom-row {
+        grid-template-columns: 1fr;
+      }
+
+      .game-tile,
+      .game-tile.small,
+      .game-tile.bottom {
+        min-height: 145px;
+      }
+
+      .tile-title {
+        font-size: 20px;
+      }
+
+      .result-item {
+        grid-template-columns: 1fr;
+      }
+
+      .result-poster {
+        min-height: 150px;
+      }
+
+      .modal-title {
+        font-size: 24px;
+      }
+
+      .modal-screens {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-yellow,
+      .btn-dark {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"></path>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Поиск" autocomplete="off" />
+      </div>
+
+      <div class="suggestions" id="suggestionsBox">
+        <div class="suggestions-title">Search results</div>
+        <div id="suggestionsList"></div>
+      </div>
+    </div>
+
+    <div class="catalog-view" id="catalogView">
+      <div id="catalog">
+        <div class="store-grid">
+          <div class="left-column" id="leftColumn"></div>
+          <div class="right-column" id="rightColumn"></div>
+        </div>
+
+        <div class="bottom-row" id="bottomRow"></div>
+      </div>
+    </div>
+
+    <div class="results-view hidden" id="resultsView">
+      <div class="results-header">
+        <div class="results-title">Результаты поиска</div>
+        <div class="results-count" id="resultsCount"></div>
+      </div>
+      <div class="results-list" id="resultsList"></div>
+    </div>
+
+    <div class="empty-state" id="emptyState">
+      Ничего не найдено. Попробуй другой запрос.
+    </div>
+  </div>
+
+  <div class="modal" id="gameModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-genre" id="modalGenre"></div>
+        <div class="modal-title" id="modalTitle"></div>
+      </div>
+
+      <div class="modal-screens" id="modalScreens"></div>
+
+      <div class="modal-body">
+        <p id="modalDescription"></p>
+
+        <div class="modal-buttons">
+          <button class="btn-yellow" id="getCodeBtn" type="button">Получить код</button>
+          <button class="btn-dark" id="closeModalBtn" type="button">Закрыть</button>
+        </div>
+
+        <div class="code-box" id="codeBox">
+          <div class="code-label">Код для лаунчера</div>
+          <div class="code-value" id="modalCode"></div>
+          <div class="code-note">Используйте этот код в физическом лаунчере.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const games = [
+      {
+        id: "mishani",
+        title: "Побег от Мишани Литвина",
+        genre: "Survival / Horror",
+        description: "Вы гуляли с друзьями, пили энергетик и смотрели TikTok. Внезапно в ленте начали появляться только видео с Литвином. Допив напиток, вы огляделись, но друзей рядом не было, а потом очнулись в подвале дома Литвина. Главная задача — выбраться и не попасться ему на глаза. Проект находится в разработке, а по атмосфере это одиночный survival horror от первого лица.",
+        code: "MISHANI-2026-DXG-PLAY",
+        initials: "ML",
+        featuredImage: "https://i.ibb.co/gbwhjPKQ/IMG-2110.png",
+        screenshots: [
+          "https://i.ibb.co/W4tgnr7W/c1A-o0.png",
+          "https://i.ibb.co/99jP2BBK/b-XSv0o.png"
+        ]
+      },
+      {
+        id: "ozon",
+        title: "Ozon Simulator (Demo)",
+        genre: "Simulation",
+        description: "Демо-игра для Windows, в которой предлагается почувствовать себя работником Ozon. Проект сделан в формате простого симулятора с видом от первого лица. По самой странице это ранняя демо-версия, скорее как эксперимент или заготовка под более крупную идею.",
+        code: "OZON-2026-DXG-DEMO",
+        initials: "OZ",
+        featuredImage: "https://i.ibb.co/qLmKptvD/Jd0Ajq.png",
+        screenshots: [
+          "https://i.ibb.co/qLmKptvD/Jd0Ajq.png",
+          "https://i.ibb.co/JWL98Y7k/ie8Mrm.png",
+          "https://i.ibb.co/QFM8tCYH/EEyzgc.png",
+          "https://i.ibb.co/Cstrgs4X/BDf-F1.png",
+          "https://i.ibb.co/s9fX5szR/d7Soe1.png"
+        ]
+      },
+      {
+        id: "shadow",
+        title: "The Shadow of the Ruined",
+        genre: "Action / Puzzle / Shooter",
+        description: "События игры разворачиваются в альтернативном мире на территории Боркинса, в Чернобыльской зоне отчуждения. Это проект для Windows с упором на мрачную атмосферу, исследование, стрельбу и элементы головоломок. Игра находится в разработке и выглядит как сюжетный одиночный хоррор-экшен.",
+        code: "SHADOW-2026-DXG-RUIN",
+        initials: "SR",
+        featuredImage: "https://i.ibb.co/bMhSPMb0/2LVgn2.png",
+        screenshots: [
+          "https://i.ibb.co/bMhSPMb0/2LVgn2.png",
+          "https://i.ibb.co/67MjGB9k/XQf-Q0P.png",
+          "https://i.ibb.co/Xfddz4m8/z-A8ec-S.png",
+          "https://i.ibb.co/TDqhcKvW/Q2k-BVn.png",
+          "https://i.ibb.co/HpNHSB1S/Xt-jcp.png",
+          "https://i.ibb.co/7JyjjXq3/u-MGj-OQ.png"
+        ]
+      },
+      {
+        id: "toilet",
+        title: "Симулятор Сидения на туалете",
+        genre: "Action / Role Playing",
+        description: "Необычный и шуточный проект от REXAR GAMES. На странице у игры указаны жанры Action и Role Playing, а также поддержка русского языка. По оформлению это скорее юмористическая игра-эксперимент с простым 3D-геймплеем и нестандартной идеей.",
+        code: "TOILET-2026-DXG-SIT",
+        initials: "СТ",
+        screenshots: []
+      },
+      {
+        id: "skuf",
+        title: "Побег от Скуфа",
+        genre: "Simulation / Puzzle",
+        description: "Игра для Windows со статусом Prototype. По тегам и подаче это проект с элементами хоррора, скрытности и побега. Основной акцент сделан на напряжённой атмосфере, перемещении по локации и попытке выбраться, не попавшись.",
+        code: "SKUF-2026-DXG-ESC",
+        initials: "СК",
+        screenshots: []
+      },
+      {
+        id: "re2",
+        title: "Resident Evil 2 Remake By Unity",
+        genre: "Horror / Action",
+        description: "Фанатский проект по мотивам Resident Evil 2, сделанный на Unity. Это downloadable horror-проект для Windows, который сейчас помечен как закрытый или отменённый. В магазине его можно оставить как архивную игру студии.",
+        code: "RE2-2026-DXG-UNITY",
+        initials: "RE2",
+        screenshots: []
+      },
+      {
+        id: "fear",
+        title: "Fear mansion: escape",
+        genre: "Horror",
+        description: "Хоррор-проект с упором на побег и тревожную атмосферу. Сейчас по нему мало открытой информации, поэтому описание лучше держать нейтральным: это мрачная игра в жанре horror, связанная с исследованием и попыткой выбраться из опасного места.",
+        code: "FEAR-2026-DXG-MANSION",
+        initials: "FM",
+        screenshots: []
+      },
+      {
+        id: "neighbor",
+        title: "Hello Neighbor(Alpha2.7)",
+        genre: "Stealth Horror",
+        description: "Проект в стиле скрытного хоррора, вдохновлённый Hello Neighbor. По подаче это альфа-версия с акцентом на скрытность, наблюдение за противником и осторожное исследование окружения. В магазине игру можно показывать как завершённый экспериментальный проект.",
+        code: "HN-2026-DXG-ALPHA",
+        initials: "HN",
+        screenshots: []
+      }
+    ];
+
+    const featuredId = "mishani";
+    const sideIds = ["ozon", "shadow"];
+    const bottomIds = ["toilet", "skuf", "re2", "fear", "neighbor"];
+
+    const searchInput = document.getElementById("searchInput");
+    const suggestionsBox = document.getElementById("suggestionsBox");
+    const suggestionsList = document.getElementById("suggestionsList");
+    const leftColumn = document.getElementById("leftColumn");
+    const rightColumn = document.getElementById("rightColumn");
+    const bottomRow = document.getElementById("bottomRow");
+    const emptyState = document.getElementById("emptyState");
+    const catalogView = document.getElementById("catalogView");
+    const resultsView = document.getElementById("resultsView");
+    const resultsList = document.getElementById("resultsList");
+    const resultsCount = document.getElementById("resultsCount");
+
+    const modal = document.getElementById("gameModal");
+    const modalGenre = document.getElementById("modalGenre");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalScreens = document.getElementById("modalScreens");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalCode = document.getElementById("modalCode");
+    const codeBox = document.getElementById("codeBox");
+    const getCodeBtn = document.getElementById("getCodeBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    let currentCode = "";
+
+    function getGame(id) {
+      return games.find(game => game.id === id);
+    }
+
+    function makePoster(game) {
+      if (game.featuredImage) {
+        return `
+          <div class="tile-poster image">
+            <img src="${game.featuredImage}" alt="${game.title}">
+          </div>
+        `;
+      }
+      return `<div class="tile-poster">${game.initials}</div>`;
+    }
+
+    function makeMiniPoster(game) {
+      if (game.featuredImage) {
+        return `
+          <div class="mini-poster image">
+            <img src="${game.featuredImage}" alt="${game.title}">
+          </div>
+        `;
+      }
+      return `<div class="mini-poster">${game.initials}</div>`;
+    }
+
+    function makeResultPoster(game) {
+      if (game.featuredImage) {
+        return `
+          <div class="result-poster image">
+            <img src="${game.featuredImage}" alt="${game.title}">
+          </div>
+        `;
+      }
+      return `<div class="result-poster">${game.initials}</div>`;
+    }
+
+    function createTile(game, extraClass = "") {
+      return `
+        <button class="game-tile ${extraClass}" type="button" data-game-id="${game.id}">
+          ${makePoster(game)}
+          <div class="tile-overlay">
+            <div class="tile-title">${game.title}</div>
+            <div class="tile-sub">${game.genre}</div>
+          </div>
+        </button>
+      `;
+    }
+
+    function renderCatalog(filtered = games) {
+      const featured = filtered.find(g => g.id === featuredId);
+      const sides = sideIds.map(getGame).filter(Boolean).filter(g => filtered.some(f => f.id === g.id));
+      const bottoms = bottomIds.map(getGame).filter(Boolean).filter(g => filtered.some(f => f.id === g.id));
+
+      leftColumn.innerHTML = featured ? createTile(featured, "") : "";
+      rightColumn.innerHTML = sides.map(game => createTile(game, "small")).join("");
+      bottomRow.innerHTML = bottoms.map(game => createTile(game, "bottom")).join("");
+
+      document.querySelectorAll(".game-tile").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const game = getGame(btn.dataset.gameId);
+          if (game) openModal(game);
+        });
+      });
+    }
+
+    function renderList(filtered = games) {
+      resultsCount.textContent = `Найдено: ${filtered.length}`;
+
+      resultsList.innerHTML = filtered.map(game => `
+        <button class="result-item" type="button" data-game-id="${game.id}">
+          ${makeResultPoster(game)}
+          <div class="result-main">
+            <div class="result-name">${game.title}</div>
+            <div class="result-genre">${game.genre}</div>
+            <div class="result-desc">${game.description}</div>
+          </div>
+          <div class="result-side">Открыть</div>
+        </button>
+      `).join("");
+
+      document.querySelectorAll(".result-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const game = getGame(btn.dataset.gameId);
+          if (game) openModal(game);
+        });
+      });
+    }
+
+    function showCatalogView() {
+      catalogView.classList.remove("hidden");
+      resultsView.classList.add("hidden");
+      emptyState.classList.remove("show");
+    }
+
+    function showResultsView(filtered) {
+      catalogView.classList.add("hidden");
+      resultsView.classList.remove("hidden");
+
+      if (!filtered.length) {
+        resultsView.classList.add("hidden");
+        emptyState.classList.add("show");
+        return;
+      }
+
+      emptyState.classList.remove("show");
+      renderList(filtered);
+    }
+
+    function renderSuggestions(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        suggestionsBox.classList.remove("show");
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      const found = games.filter(game => {
+        return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(q);
+      }).slice(0, 5);
+
+      if (!found.length) {
+        suggestionsBox.classList.remove("show");
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      suggestionsList.innerHTML = found.map(game => `
+        <button class="suggestion-item" type="button" data-game-id="${game.id}">
+          ${makeMiniPoster(game)}
+          <div class="mini-meta">
+            <div class="mini-title">${game.title}</div>
+            <div class="mini-sub">${game.genre}</div>
+          </div>
+        </button>
+      `).join("");
+
+      suggestionsBox.classList.add("show");
+
+      suggestionsList.querySelectorAll(".suggestion-item").forEach(item => {
+        item.addEventListener("click", () => {
+          const game = getGame(item.dataset.gameId);
+          if (!game) return;
+          searchInput.value = game.title;
+          suggestionsBox.classList.remove("show");
+          showResultsView([game]);
+        });
+      });
+    }
+
+    function openModal(game) {
+      modalGenre.textContent = game.genre;
+      modalTitle.textContent = game.title;
+      modalDescription.textContent = game.description;
+      modalCode.textContent = game.code;
+      currentCode = game.code;
+      codeBox.classList.remove("show");
+
+      if (game.screenshots && game.screenshots.length) {
+        modalScreens.innerHTML = game.screenshots.map(src => `
+          <div class="screen-box">
+            <img src="${src}" alt="${game.title}">
+          </div>
+        `).join("");
+      } else {
+        modalScreens.innerHTML = `
+          <div class="screen-box">${game.initials} 1</div>
+          <div class="screen-box">${game.initials} 2</div>
+        `;
+      }
+
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+      codeBox.classList.remove("show");
+    }
+
+    searchInput.addEventListener("input", () => {
+      const value = searchInput.value.trim().toLowerCase();
+
+      renderSuggestions(value);
+
+      if (!value) {
+        showCatalogView();
+        renderCatalog(games);
+        return;
+      }
+
+      const filtered = games.filter(game => {
+        return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(value);
+      });
+
+      showResultsView(filtered);
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const value = searchInput.value.trim().toLowerCase();
+
+        if (!value) {
+          showCatalogView();
+          renderCatalog(games);
+          suggestionsBox.classList.remove("show");
+          return;
+        }
+
+        const filtered = games.filter(game => {
+          return `${game.title} ${game.genre} ${game.description}`.toLowerCase().includes(value);
+        });
+
+        showResultsView(filtered);
+        suggestionsBox.classList.remove("show");
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-wrap")) {
+        suggestionsBox.classList.remove("show");
+      }
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    getCodeBtn.addEventListener("click", () => {
+      if (!currentCode) return;
+      codeBox.classList.add("show");
+    });
+
+    closeModalBtn.addEventListener("click", closeModal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+    renderCatalog(games);
+    showCatalogView();
+  </script>
+</body>
+</html>
