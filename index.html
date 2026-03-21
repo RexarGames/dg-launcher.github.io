@@ -20,6 +20,7 @@
       --muted: #a9a9a9;
       --yellow: #f3c316;
       --yellow-hover: #ffd84c;
+      --blue-panel: #101724;
     }
 
     body {
@@ -38,20 +39,23 @@
 
     html::-webkit-scrollbar,
     body::-webkit-scrollbar,
-    .modal-box::-webkit-scrollbar {
+    .modal-box::-webkit-scrollbar,
+    .profile-box::-webkit-scrollbar {
       width: 10px;
       height: 10px;
     }
 
     html::-webkit-scrollbar-track,
     body::-webkit-scrollbar-track,
-    .modal-box::-webkit-scrollbar-track {
+    .modal-box::-webkit-scrollbar-track,
+    .profile-box::-webkit-scrollbar-track {
       background: #0b0b0b;
     }
 
     html::-webkit-scrollbar-thumb,
     body::-webkit-scrollbar-thumb,
-    .modal-box::-webkit-scrollbar-thumb {
+    .modal-box::-webkit-scrollbar-thumb,
+    .profile-box::-webkit-scrollbar-thumb {
       background: #2a2a2a;
       border-radius: 10px;
       border: 2px solid #0b0b0b;
@@ -181,7 +185,7 @@
       border-radius: 18px;
       overflow: hidden;
       position: relative;
-      min-height: 210px;
+      min-height: 220px;
       background: #0d1320;
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: 0 14px 40px rgba(0,0,0,0.28);
@@ -215,7 +219,7 @@
       position: relative;
       z-index: 2;
       padding: 22px;
-      min-height: 210px;
+      min-height: 220px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -444,7 +448,7 @@
     .tile-overlay {
       position: relative;
       z-index: 2;
-      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.72));
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.76));
       padding: 16px;
       min-height: 92px;
       display: flex;
@@ -500,7 +504,7 @@
       display: grid;
       grid-template-columns: 220px 1fr auto;
       gap: 0;
-      background: #101724;
+      background: var(--blue-panel);
       border: 1px solid rgba(255,255,255,0.05);
       color: white;
       text-align: left;
@@ -585,7 +589,8 @@
       display: block;
     }
 
-    .modal {
+    .modal,
+    .profile-modal {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.78);
@@ -593,20 +598,55 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
+    }
+
+    .modal {
       z-index: 100;
     }
 
-    .modal.active {
+    .profile-modal {
+      z-index: 130;
+      background: rgba(0,0,0,0.84);
+    }
+
+    .modal.active,
+    .profile-modal.active {
       display: flex;
     }
 
     .modal-box {
-      width: min(820px, 100%);
+      width: min(1100px, 100%);
       max-height: calc(100vh - 32px);
       overflow-y: auto;
       background: #151515;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
+    }
+
+    .profile-box {
+      width: min(900px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      background: #111111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+    }
+
+    .modal-banner {
+      height: 240px;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    .modal-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.55)),
+        linear-gradient(90deg, rgba(0,0,0,0.22), rgba(0,0,0,0.05));
     }
 
     .modal-head {
@@ -631,12 +671,82 @@
       font-weight: 900;
     }
 
+    .modal-body {
+      padding: 18px;
+    }
+
+    .modal-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .meta-card {
+      background: #111111;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .meta-label {
+      font-size: 12px;
+      color: #8f8f8f;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: bold;
+    }
+
+    .meta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: none;
+      color: #ffd84c;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+    }
+
+    .meta-link:hover {
+      color: #fff2b2;
+    }
+
+    .warning-box {
+      display: none;
+      margin-bottom: 16px;
+      background: rgba(243,195,22,0.12);
+      border: 1px solid rgba(243,195,22,0.28);
+      color: #ffe8a3;
+      border-radius: 14px;
+      padding: 14px 16px;
+      line-height: 1.6;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    .warning-box.show {
+      display: block;
+    }
+
+    .modal-body p {
+      color: #b5b5b5;
+      line-height: 1.7;
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
     .modal-screens {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
       padding: 18px;
       background: #111111;
+      border-top: 1px solid rgba(255,255,255,0.06);
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
@@ -654,6 +764,7 @@
       font-weight: bold;
       text-align: center;
       padding: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .screen-box img {
@@ -663,18 +774,8 @@
       display: block;
     }
 
-    .modal-body {
-      padding: 18px;
-    }
-
-    .modal-body p {
-      color: #b5b5b5;
-      line-height: 1.7;
-      font-size: 15px;
-      white-space: pre-line;
-    }
-
-    .modal-buttons {
+    .modal-buttons,
+    .profile-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -741,7 +842,120 @@
       line-height: 1.55;
     }
 
-    @media (max-width: 860px) {
+    .profile-cover {
+      height: 180px;
+      position: relative;
+      background:
+        linear-gradient(135deg, rgba(243,195,22,0.22), rgba(28,28,28,0.92)),
+        #151515 center center / cover no-repeat;
+    }
+
+    .profile-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.55));
+    }
+
+    .profile-head {
+      position: relative;
+      margin-top: -52px;
+      padding: 0 18px 18px;
+      z-index: 2;
+    }
+
+    .profile-avatar {
+      width: 104px;
+      height: 104px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
+      border: 4px solid #111111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      color: #ffe27d;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+
+    .profile-name {
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .profile-followers {
+      color: #cfd7e8;
+      font-size: 15px;
+    }
+
+    .profile-body {
+      padding: 0 18px 18px;
+    }
+
+    .profile-section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .profile-games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .profile-game-card {
+      background: #141414;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.15s ease;
+    }
+
+    .profile-game-card:hover {
+      transform: translateY(-1px);
+      background: #191919;
+    }
+
+    .profile-game-poster {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0f0f0f;
+      overflow: hidden;
+    }
+
+    .profile-game-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-game-body {
+      padding: 12px;
+    }
+
+    .profile-game-title {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .profile-game-sub {
+      font-size: 13px;
+      color: #b4bccd;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 980px) {
       .store-grid {
         grid-template-columns: 1fr;
       }
@@ -760,12 +974,22 @@
         padding-top: 0;
       }
 
-      .top-rated-card {
-        min-height: 190px;
+      .modal-box {
+        width: min(960px, 100%);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .modal-info-grid {
+        grid-template-columns: 1fr;
       }
 
-      .top-rated-content {
-        min-height: 190px;
+      .modal-banner {
+        height: 180px;
+      }
+
+      .profile-name {
+        font-size: 28px;
       }
     }
 
@@ -845,6 +1069,20 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
+      .profile-cover {
+        height: 150px;
+      }
+
+      .profile-avatar {
+        width: 88px;
+        height: 88px;
+        font-size: 28px;
+      }
+
+      .profile-games-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -916,14 +1154,28 @@
 
   <div class="modal" id="gameModal">
     <div class="modal-box">
+      <div class="modal-banner" id="modalBanner"></div>
+
       <div class="modal-head">
         <div class="modal-genre" id="modalGenre"></div>
         <div class="modal-title" id="modalTitle"></div>
       </div>
 
-      <div class="modal-screens" id="modalScreens"></div>
-
       <div class="modal-body">
+        <div class="modal-info-grid">
+          <div class="meta-card">
+            <div class="meta-label" id="publisherLabel">Издатель</div>
+            <button class="meta-link" id="modalPublisherBtn" type="button"></button>
+          </div>
+
+          <div class="meta-card">
+            <div class="meta-label" id="developerLabel">Разработчик</div>
+            <button class="meta-link" id="modalDeveloperBtn" type="button"></button>
+          </div>
+        </div>
+
+        <div class="warning-box" id="modalWarning"></div>
+
         <p id="modalDescription"></p>
 
         <div class="modal-buttons">
@@ -935,6 +1187,29 @@
           <div class="code-label" id="codeLabel">Код для лаунчера</div>
           <div class="code-value" id="modalCode"></div>
           <div class="code-note" id="codeNote">Используйте этот код в физическом лаунчере.</div>
+        </div>
+      </div>
+
+      <div class="modal-screens" id="modalScreens"></div>
+    </div>
+  </div>
+
+  <div class="profile-modal" id="profileModal">
+    <div class="profile-box">
+      <div class="profile-cover" id="profileCover"></div>
+
+      <div class="profile-head">
+        <div class="profile-avatar" id="profileAvatar"></div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-followers" id="profileFollowers"></div>
+      </div>
+
+      <div class="profile-body">
+        <div class="profile-section-title" id="profileGamesTitle">Игры</div>
+        <div class="profile-games-grid" id="profileGamesGrid"></div>
+
+        <div class="profile-actions">
+          <button class="btn-dark" id="closeProfileBtn" type="button">Закрыть профиль</button>
         </div>
       </div>
     </div>
@@ -955,7 +1230,12 @@
         empty: "Ничего не найдено. Попробуй другой запрос.",
         topRated: "Топ игры по оценкам",
         rating: "Оценка",
-        votes: "оценок"
+        votes: "оценок",
+        publisher: "Издатель",
+        developer: "Разработчик",
+        followers: "подписчиков",
+        gamesTitle: "Игры",
+        closeProfile: "Закрыть профиль"
       },
       zh: {
         search: "搜索",
@@ -970,7 +1250,12 @@
         empty: "未找到内容。请尝试其他搜索词。",
         topRated: "评分最高游戏",
         rating: "评分",
-        votes: "条评分"
+        votes: "条评分",
+        publisher: "发行商",
+        developer: "开发者",
+        followers: "位关注者",
+        gamesTitle: "游戏",
+        closeProfile: "关闭资料"
       },
       en: {
         search: "Search",
@@ -985,11 +1270,39 @@
         empty: "Nothing found. Try another search.",
         topRated: "Top rated game",
         rating: "Rating",
-        votes: "ratings"
+        votes: "ratings",
+        publisher: "Publisher",
+        developer: "Developer",
+        followers: "followers",
+        gamesTitle: "Games",
+        closeProfile: "Close profile"
       }
     };
 
     let currentLang = "ru";
+
+    const profiles = {
+      dexxure: {
+        id: "dexxure",
+        initials: "DX",
+        followers: 97,
+        name: {
+          ru: "Dexxure Games",
+          en: "Dexxure Games",
+          zh: "Dexxure Games"
+        }
+      },
+      n4ba: {
+        id: "n4ba",
+        initials: "N4",
+        followers: 2208,
+        name: {
+          ru: "n4ba",
+          en: "n4ba",
+          zh: "n4ba"
+        }
+      }
+    };
 
     const games = [
       {
@@ -1015,7 +1328,9 @@
         screenshots: [
           "https://i.ibb.co/W4tgnr7W/c1A-o0.png",
           "https://i.ibb.co/99jP2BBK/b-XSv0o.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "ozon",
@@ -1045,7 +1360,9 @@
           "https://i.ibb.co/s9fX5szR/d7Soe1.png"
         ],
         rating: 4.5,
-        ratingCount: 13
+        ratingCount: 13,
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "shadow",
@@ -1074,7 +1391,9 @@
           "https://i.ibb.co/TDqhcKvW/Q2k-BVn.png",
           "https://i.ibb.co/HpNHSB1S/Xt-jcp.png",
           "https://i.ibb.co/7JyjjXq3/u-MGj-OQ.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "toilet",
@@ -1101,7 +1420,9 @@
           "https://i.ibb.co/tggR2pc/bx4z6m.jpg",
           "https://i.ibb.co/vvm4hzg3/6YLyzj.jpg",
           "https://i.ibb.co/JjrGNkTb/sg6XGY.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "skuf",
@@ -1127,7 +1448,9 @@
           "https://i.ibb.co/w31PGpv/i-WVO7C.png",
           "https://i.ibb.co/JwCDHTFW/2n9O9F.png",
           "https://i.ibb.co/CpNJ0jMX/c-Snw0V.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "fear",
@@ -1155,7 +1478,9 @@
           "https://i.ibb.co/rKCTRWjd/R1g-Mp-I.png",
           "https://i.ibb.co/LDKpzwLz/g-Ht-DKZ.png",
           "https://i.ibb.co/chQhsnS8/NS-F3z.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "neighbor",
@@ -1182,7 +1507,9 @@
           "https://i.ibb.co/RpwRF3fx/b-Q9qzv.png",
           "https://i.ibb.co/qYSDndqj/rm5GOV.png",
           "https://i.ibb.co/7Jx3QQyS/3Hm-3V.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
       },
       {
         id: "youarealone",
@@ -1210,13 +1537,53 @@
           "https://i.ibb.co/RTYNrw0q/omf-Wv.png",
           "https://i.ibb.co/mF2nRXCg/G5g-Tjq.png",
           "https://i.ibb.co/3yvsJC3P/Pyl6oo.png"
-        ]
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "fromdarkness",
+        title: {
+          ru: "From The Darkness",
+          en: "From The Darkness",
+          zh: "来自黑暗"
+        },
+        genre: {
+          ru: "First-Person Horror",
+          en: "First-Person Horror",
+          zh: "第一人称恐怖"
+        },
+        warning: {
+          ru: "Игра содержит вспышки света, которые могут вызвать эпилептические припадки.",
+          en: "This game contains flashing lights that may trigger epileptic seizures.",
+          zh: "本游戏包含闪光效果，可能会引发癫痫发作。"
+        },
+        description: {
+          ru: "From the darkness — это хоррор-игра от первого лица, в которой основное внимание уделяется созданию страха у игрока.\n\nБольшую часть времени вам предстоит ходить и исследовать заброшенную квартиру умершего дедушки, в которую вы пришли за старым семейным альбомом, но в квартире начинают твориться странные вещи, тот, кто живет во тьме, не отпустит вас так легко. Ваша главная задача — выбраться живым, но сделать это можно только встретившись лицом к лицу с обитателем тьмы.\n\nВремя прохождения игры около часа.",
+          en: "From The Darkness is a first-person horror game focused on creating fear for the player.\n\nMost of the time you will walk and explore the abandoned apartment of your deceased grandfather, where you came for an old family album, but strange things begin to happen in the apartment, and the one who lives in the darkness will not let you go so easily. Your main task is to escape alive, but you can do this only by meeting the dweller of the darkness face to face.\n\nThe game takes about one hour to complete.",
+          zh: "《来自黑暗》是一款第一人称恐怖游戏，重点在于为玩家营造强烈的恐惧感。\n\n大部分时间里，你需要在已故祖父那间废弃公寓中行走并探索。你来到这里是为了寻找一本旧的家庭相册，但公寓里开始发生诡异的事情，栖身于黑暗中的存在不会轻易放你离开。你的主要任务是活着逃出去，但做到这一点的唯一方式，就是直面黑暗中的住民。\n\n通关时间大约为一小时。"
+        },
+        code: "DARKNESS-2026-N4BA-HOUR",
+        initials: "FD",
+        featuredImage: "https://i.ibb.co/ZRDRjD1V/header.jpg",
+        screenshots: [
+          "https://i.ibb.co/ZRDRjD1V/header.jpg",
+          "https://i.ibb.co/TJxmgcm/ss-f6d3678fe4d4a6bc7ed18cdae365734e8087858f-1920x1080.jpg",
+          "https://i.ibb.co/C3Qfc66f/ss-dde0b6e78529e674ba434d1172879ae76aa566e5-1920x1080.jpg",
+          "https://i.ibb.co/s9BMkQ3t/ss-5e008b1df54cdbf159621636eb09a585315756a3-1920x1080.jpg",
+          "https://i.ibb.co/DD3RZhq0/ss-ac05c6f0fa35086a6b29e17b596a7143c7067289-1920x1080.jpg",
+          "https://i.ibb.co/4gwsLG3z/ss-a52dd386ab0826d4bc46fb5b74952a7da10cedff-1920x1080.jpg",
+          "https://i.ibb.co/svFVGRS5/ss-e9fd13c104b7b82e8434e76aed5ced17455740f0-1920x1080.jpg",
+          "https://i.ibb.co/S4SSHVW1/ss-e76b1af321d37f2566438094b5bad47c446bee86-1920x1080.jpg"
+        ],
+        publisherId: "n4ba",
+        developerId: "n4ba"
       }
     ];
 
     const featuredId = "mishani";
     const sideIds = ["ozon", "shadow"];
-    const bottomIds = ["toilet", "skuf", "fear", "neighbor", "youarealone"];
+    const bottomIds = ["toilet", "skuf", "fear", "neighbor", "youarealone", "fromdarkness"];
     const topRatedGameId = "ozon";
 
     const searchInput = document.getElementById("searchInput");
@@ -1243,16 +1610,31 @@
     const topRatedCount = document.getElementById("topRatedCount");
 
     const modal = document.getElementById("gameModal");
+    const modalBanner = document.getElementById("modalBanner");
     const modalGenre = document.getElementById("modalGenre");
     const modalTitle = document.getElementById("modalTitle");
-    const modalScreens = document.getElementById("modalScreens");
     const modalDescription = document.getElementById("modalDescription");
+    const modalWarning = document.getElementById("modalWarning");
+    const modalPublisherBtn = document.getElementById("modalPublisherBtn");
+    const modalDeveloperBtn = document.getElementById("modalDeveloperBtn");
+    const publisherLabel = document.getElementById("publisherLabel");
+    const developerLabel = document.getElementById("developerLabel");
+    const modalScreens = document.getElementById("modalScreens");
     const modalCode = document.getElementById("modalCode");
     const codeBox = document.getElementById("codeBox");
     const getCodeBtn = document.getElementById("getCodeBtn");
     const closeModalBtn = document.getElementById("closeModalBtn");
     const codeLabel = document.getElementById("codeLabel");
     const codeNote = document.getElementById("codeNote");
+
+    const profileModal = document.getElementById("profileModal");
+    const profileCover = document.getElementById("profileCover");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileName = document.getElementById("profileName");
+    const profileFollowers = document.getElementById("profileFollowers");
+    const profileGamesTitle = document.getElementById("profileGamesTitle");
+    const profileGamesGrid = document.getElementById("profileGamesGrid");
+    const closeProfileBtn = document.getElementById("closeProfileBtn");
 
     const langToggle = document.getElementById("langToggle");
     const langMenu = document.getElementById("langMenu");
@@ -1261,7 +1643,16 @@
 
     function tGame(obj) {
       if (typeof obj === "string") return obj;
-      return obj[currentLang] || obj.ru || "";
+      return obj[currentLang] || obj.ru || obj.en || "";
+    }
+
+    function getProfile(profileId) {
+      return profiles[profileId];
+    }
+
+    function tProfileName(profileId) {
+      const profile = getProfile(profileId);
+      return profile ? tGame(profile.name) : "";
     }
 
     function applyLanguage() {
@@ -1275,6 +1666,10 @@
       codeNote.textContent = t.codeNote;
       emptyState.textContent = t.empty;
       topRatedKicker.textContent = t.topRated;
+      publisherLabel.textContent = t.publisher;
+      developerLabel.textContent = t.developer;
+      profileGamesTitle.textContent = t.gamesTitle;
+      closeProfileBtn.textContent = t.closeProfile;
       langToggle.textContent = currentLang.toUpperCase();
       renderTopRated();
     }
@@ -1340,6 +1735,15 @@
       `;
     }
 
+    function attachGameTileEvents() {
+      document.querySelectorAll(".game-tile").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const game = getGame(btn.dataset.gameId);
+          if (game) openModal(game);
+        });
+      });
+    }
+
     function renderCatalog(filtered = games) {
       const featured = filtered.find(g => g.id === featuredId);
       const sides = sideIds.map(getGame).filter(Boolean).filter(g => filtered.some(f => f.id === g.id));
@@ -1349,12 +1753,7 @@
       rightColumn.innerHTML = sides.map(game => createTile(game, "small")).join("");
       bottomRow.innerHTML = bottoms.map(game => createTile(game, "bottom")).join("");
 
-      document.querySelectorAll(".game-tile").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const game = getGame(btn.dataset.gameId);
-          if (game) openModal(game);
-        });
-      });
+      attachGameTileEvents();
     }
 
     function renderList(filtered = games) {
@@ -1450,6 +1849,26 @@
       modalDescription.textContent = tGame(game.description);
       modalCode.textContent = game.code;
       currentCode = game.code;
+
+      modalPublisherBtn.textContent = tProfileName(game.publisherId);
+      modalPublisherBtn.dataset.profileId = game.publisherId;
+      modalDeveloperBtn.textContent = tProfileName(game.developerId);
+      modalDeveloperBtn.dataset.profileId = game.developerId;
+
+      if (game.warning) {
+        modalWarning.textContent = tGame(game.warning);
+        modalWarning.classList.add("show");
+      } else {
+        modalWarning.textContent = "";
+        modalWarning.classList.remove("show");
+      }
+
+      if (game.featuredImage) {
+        modalBanner.style.backgroundImage = `url("${game.featuredImage}")`;
+      } else {
+        modalBanner.style.backgroundImage = "linear-gradient(135deg, #181818, #303030)";
+      }
+
       codeBox.classList.remove("show");
 
       if (game.screenshots && game.screenshots.length) {
@@ -1471,13 +1890,80 @@
 
     function closeModal() {
       modal.classList.remove("active");
-      document.body.style.overflow = "";
+      if (!profileModal.classList.contains("active")) {
+        document.body.style.overflow = "";
+      }
       codeBox.classList.remove("show");
+    }
+
+    function openProfile(profileId) {
+      const profile = getProfile(profileId);
+      if (!profile) return;
+
+      const profileGames = games.filter(game =>
+        game.publisherId === profileId || game.developerId === profileId
+      );
+
+      profileAvatar.textContent = profile.initials;
+      profileName.textContent = tGame(profile.name);
+      profileFollowers.textContent = `${profile.followers} ${ui[currentLang].followers}`;
+
+      if (profileGames.length && profileGames[0].featuredImage) {
+        profileCover.style.background = `
+          linear-gradient(135deg, rgba(243,195,22,0.22), rgba(28,28,28,0.92)),
+          url("${profileGames[0].featuredImage}") center center / cover no-repeat
+        `;
+      } else {
+        profileCover.style.background = `
+          linear-gradient(135deg, rgba(243,195,22,0.22), rgba(28,28,28,0.92)),
+          #151515
+        `;
+      }
+
+      profileGamesGrid.innerHTML = profileGames.map(game => `
+        <button class="profile-game-card" type="button" data-game-id="${game.id}">
+          <div class="profile-game-poster">
+            <img src="${game.featuredImage}" alt="${tGame(game.title)}">
+          </div>
+          <div class="profile-game-body">
+            <div class="profile-game-title">${tGame(game.title)}</div>
+            <div class="profile-game-sub">${tGame(game.genre)}</div>
+          </div>
+        </button>
+      `).join("");
+
+      profileGamesGrid.querySelectorAll(".profile-game-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const game = getGame(card.dataset.gameId);
+          closeProfile();
+          if (game) openModal(game);
+        });
+      });
+
+      profileModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeProfile() {
+      profileModal.classList.remove("active");
+      if (!modal.classList.contains("active")) {
+        document.body.style.overflow = "";
+      }
     }
 
     topRatedCard.addEventListener("click", () => {
       const game = getGame(topRatedGameId);
       if (game) openModal(game);
+    });
+
+    modalPublisherBtn.addEventListener("click", () => {
+      const profileId = modalPublisherBtn.dataset.profileId;
+      if (profileId) openProfile(profileId);
+    });
+
+    modalDeveloperBtn.addEventListener("click", () => {
+      const profileId = modalDeveloperBtn.dataset.profileId;
+      if (profileId) openProfile(profileId);
     });
 
     searchInput.addEventListener("input", () => {
@@ -1548,6 +2034,11 @@
             renderSuggestions(value);
           }
         }
+
+        if (modal.classList.contains("active")) {
+          const openGame = games.find(game => game.code === currentCode);
+          if (openGame) openModal(openGame);
+        }
       });
     });
 
@@ -1561,6 +2052,9 @@
       if (e.target === modal) {
         closeModal();
       }
+      if (e.target === profileModal) {
+        closeProfile();
+      }
     });
 
     getCodeBtn.addEventListener("click", () => {
@@ -1569,10 +2063,17 @@
     });
 
     closeModalBtn.addEventListener("click", closeModal);
+    closeProfileBtn.addEventListener("click", closeProfile);
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("active")) {
-        closeModal();
+      if (e.key === "Escape") {
+        if (profileModal.classList.contains("active")) {
+          closeProfile();
+          return;
+        }
+        if (modal.classList.contains("active")) {
+          closeModal();
+        }
       }
     });
 
