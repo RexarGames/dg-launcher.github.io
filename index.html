@@ -29,38 +29,20 @@
       scrollbar-color: #2a2a2a #0b0b0b;
       scrollbar-width: thin;
       overscroll-behavior: none;
+      overflow-x: hidden;
     }
 
     body {
       font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-      background: #000;
-      position: relative;
-      overflow-x: hidden;
-      overscroll-behavior: none;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: -80px;
-      z-index: -2;
       background:
         linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-        url("https://i.ibb.co/gLrbwGS3/2026-03-20-181434.png") center center / cover no-repeat;
-      transform: scale(1.08);
-      will-change: transform;
-      pointer-events: none;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -3;
-      background: #000;
-      pointer-events: none;
+        url("https://i.ibb.co/gLrbwGS3/2026-03-20-181434.png") center center / cover no-repeat fixed;
+      color: var(--text);
+      min-height: 100vh;
+      background-color: #000;
+      overflow-x: hidden;
+      overscroll-behavior: none;
+      touch-action: pan-x pan-y;
     }
 
     html::-webkit-scrollbar,
@@ -647,6 +629,8 @@
       background: #151515;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .profile-box {
@@ -656,6 +640,8 @@
       background: #111111;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .modal-banner {
@@ -1020,11 +1006,6 @@
     }
 
     @media (max-width: 640px) {
-      body::before {
-        inset: -100px;
-        transform: scale(1.12);
-      }
-
       .page {
         width: min(100% - 16px, 1200px);
         padding: 10px 0 18px;
@@ -2213,6 +2194,32 @@
         }
       }
     });
+
+    // Блокировка "проворота" за границы страницы на мобильных устройствах
+    let touchStartY = 0;
+
+    document.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 1) {
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    document.addEventListener("touchmove", (e) => {
+      if (e.touches.length !== 1) return;
+
+      const scrollTarget = e.target.closest(".modal-box, .profile-box");
+      const scroller = scrollTarget || document.scrollingElement || document.documentElement;
+
+      const currentY = e.touches[0].clientY;
+      const diffY = currentY - touchStartY;
+
+      const atTop = scroller.scrollTop <= 0;
+      const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
+
+      if ((atTop && diffY > 0) || (atBottom && diffY < 0)) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     applyLanguage();
     renderCatalog(games);
