@@ -28,7 +28,6 @@
       background: #000;
       scrollbar-color: #2a2a2a #0b0b0b;
       scrollbar-width: thin;
-      overscroll-behavior: none;
       overflow-x: hidden;
     }
 
@@ -41,7 +40,6 @@
       min-height: 100vh;
       background-color: #000;
       overflow-x: hidden;
-      overscroll-behavior: none;
     }
 
     html::-webkit-scrollbar,
@@ -628,7 +626,6 @@
       background: #151515;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
-      overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -639,7 +636,6 @@
       background: #111111;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
-      overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -2104,6 +2100,15 @@
         }
       }
     });
+
+    // Принудительная прокрутка колесиком на главной странице
+    window.addEventListener("wheel", (e) => {
+      if (modal.classList.contains("active") || profileModal.classList.contains("active")) return;
+
+      const scroller = document.scrollingElement || document.documentElement;
+      e.preventDefault();
+      scroller.scrollTop += e.deltaY;
+    }, { passive: false });
 
     applyLanguage();
     renderCatalog(games);
