@@ -1,688 +1,2119 @@
-<!doctype html>
-<html lang="ru">
+<!DOCTYPE html>
+<html oncontextmenu="return false" lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messenger + Channels</title>
+  <title>REXAR GAMES Store</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     :root {
-      --bg: #0e1621;
-      --panel: #17212b;
-      --line: #22303d;
-      --text: #e6eef6;
-      --muted: #8ea1b3;
-      --blue: #2aabee;
-      --danger: #ef5350;
-      --bubble-me: #2b5278;
-      --bubble-other: #182533;
-      --menu-width: 300px;
+      --bg: #0b0b0b;
+      --panel: #151515;
+      --panel-2: #1c1c1c;
+      --border: rgba(255,255,255,0.08);
+      --text: #f2f2f2;
+      --muted: #a9a9a9;
+      --yellow: #f3c316;
+      --yellow-hover: #ffd84c;
+      --blue-panel: #101724;
     }
-    * { box-sizing:border-box; }
-    html, body { height:100%; }
-    body { margin:0; font-family:Inter, Arial, sans-serif; background:var(--bg); color:var(--text); overflow:hidden; }
-    .hidden { display:none !important; }
-    .mobile-only { display:none; }
-    button,input,textarea,select { font:inherit; }
-    input,textarea,select { width:100%; border:1px solid var(--line); background:#101922; color:var(--text); border-radius:10px; padding:12px 14px; outline:none; }
-    textarea { resize:vertical; min-height:52px; }
-    input::placeholder,textarea::placeholder { color:#6f8396; }
-    input:focus,textarea:focus,select:focus { border-color:var(--blue); }
-    .btn { border:0; border-radius:10px; padding:10px 14px; cursor:pointer; transition:.18s ease; }
-    .btn:hover { opacity:.92; }
-    .btn:disabled { opacity:.55; cursor:default; }
-    .btn-primary { background:var(--blue); color:#fff; }
-    .btn-secondary { background:#223140; color:var(--text); }
-    .btn-danger { background:#402126; color:#ffc7c7; }
-    .icon-btn { width:40px; height:40px; border:0; border-radius:8px; background:transparent; color:var(--text); cursor:pointer; }
-    .icon-btn:hover { background:rgba(255,255,255,.06); }
-    .auth-wrap { min-height:100vh; display:grid; place-items:center; padding:20px; }
-    .auth-card { width:min(900px,100%); display:grid; grid-template-columns:1fr 1fr; background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
-    .auth-side { padding:28px; border-right:1px solid var(--line); background:linear-gradient(180deg,#17212b,#121c26); }
-    .auth-side h1 { margin:0 0 12px; font-size:40px; }
-    .auth-side p { margin:0; color:var(--muted); line-height:1.6; }
-    .auth-main { padding:24px; }
-    .tabs { display:flex; gap:8px; margin-bottom:16px; }
-    .tab-btn { flex:1; border:1px solid var(--line); background:#13202b; color:var(--text); border-radius:10px; padding:12px; cursor:pointer; }
-    .tab-btn.active { background:#203445; border-color:#2d4356; }
-    .field-grid { display:grid; gap:12px; }
-    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .status { min-height:20px; color:var(--muted); font-size:14px; }
 
-    .app-shell { height:100vh; display:grid; grid-template-columns:330px 1fr; }
-    .sidebar { background:var(--panel); border-right:1px solid rgba(255,255,255,.05); display:grid; grid-template-rows:auto auto 1fr; min-height:0; }
-    .sidebar-top { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.05); display:grid; gap:10px; }
-    .sidebar-top-row { display:flex; align-items:center; gap:10px; }
-    .mode-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .mode-tab { border:1px solid var(--line); background:#13202b; color:var(--text); border-radius:10px; padding:10px; cursor:pointer; }
-    .mode-tab.active { background:#203445; border-color:#2d4356; }
-    .search-input { border-radius:18px; background:#3b4652; border:0; padding:10px 14px; color:white; }
-    .list-wrap { overflow:auto; min-height:0; }
-    .list-item { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:10px 12px; cursor:pointer; transition:.15s ease; }
-    .list-item:hover,.list-item.active { background:#20303f; }
-    .avatar { width:52px; height:52px; min-width:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; color:white; background:#2a3b4a; font-size:24px; overflow:hidden; }
-    .avatar.fallback { font-size:18px; }
-    .item-name { font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px; }
-    .item-sub { color:var(--muted); font-size:14px; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .item-meta { display:flex; flex-direction:column; align-items:flex-end; gap:6px; font-size:12px; color:var(--muted); }
-    .unread-badge { min-width:22px; height:22px; padding:0 7px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; background:var(--blue); color:white; font-size:12px; font-weight:700; }
-
-    .main { display:grid; grid-template-rows:64px 1fr auto; min-height:0; background:#0b141a; }
-    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 14px; border-bottom:1px solid rgba(255,255,255,.05); background:var(--panel); }
-    .topbar-left { display:flex; align-items:center; gap:12px; min-width:0; cursor:pointer; }
-    .title-wrap { min-width:0; }
-    .title-main { font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .title-sub { color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .content-scroll { overflow:auto; min-height:0; padding:18px; display:flex; flex-direction:column; gap:10px; background:radial-gradient(circle at center, rgba(255,255,255,.03), transparent 35%), #0e1621; }
-    .empty { height:100%; display:grid; place-items:center; color:var(--muted); text-align:center; padding:20px; }
-    .msg { max-width:min(75%,760px); padding:10px 12px; border-radius:14px; background:var(--bubble-other); align-self:flex-start; border:1px solid rgba(255,255,255,.03); }
-    .msg.mine { background:var(--bubble-me); align-self:flex-end; }
-    .msg-head { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; color:#aac3d8; margin-bottom:5px; }
-    .msg-body { white-space:pre-wrap; word-break:break-word; line-height:1.5; }
-
-    .channel-post { background:var(--panel); border:1px solid rgba(255,255,255,.05); border-radius:16px; padding:16px; }
-    .channel-post-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
-    .channel-post-body { white-space:pre-wrap; line-height:1.6; }
-    .post-stats { display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:13px; margin-top:12px; }
-    .reactions { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
-    .reaction-btn { border:1px solid rgba(255,255,255,.08); background:#223140; color:var(--text); border-radius:999px; padding:8px 12px; cursor:pointer; }
-    .reaction-btn.active { background:#2aabee; color:white; }
-
-    .composer { padding:12px; border-top:1px solid rgba(255,255,255,.05); background:var(--panel); }
-    .composer-row { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; }
-    .composer textarea { min-height:48px; max-height:180px; border-radius:18px; background:#17212b; }
-
-    .menu-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; z-index:40; }
-    .menu-overlay.open { display:block; }
-    .left-menu { position:fixed; left:0; top:0; bottom:0; width:var(--menu-width); background:var(--panel); border-right:1px solid rgba(255,255,255,.05); transform:translateX(-100%); transition:transform .2s ease; z-index:50; display:grid; grid-template-rows:auto 1fr auto; }
-    .left-menu.open { transform:translateX(0); }
-    .menu-header { padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
-    .menu-user { display:flex; align-items:center; gap:12px; }
-    .menu-list { padding:8px 0; overflow:auto; }
-    .menu-item { display:flex; align-items:center; gap:14px; padding:14px 18px; cursor:pointer; color:var(--text); }
-    .menu-item:hover { background:rgba(255,255,255,.05); }
-    .menu-footer { padding:16px 18px; color:var(--muted); font-size:13px; border-top:1px solid rgba(255,255,255,.05); }
-
-    .modal { position:fixed; inset:0; background:rgba(6,11,16,.7); display:none; align-items:center; justify-content:center; padding:20px; z-index:60; }
-    .modal.open { display:flex; }
-    .modal-card { width:min(760px,100%); max-height:90vh; overflow:auto; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; }
-    .modal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-    .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .user-row { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05); }
-    .tiny { color:var(--muted); font-size:13px; }
-    .prefix-badge { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-left:6px; color:#111; background:#f1c40f; }
-    .fake-badge { display:inline-flex; align-items:center; justify-content:center; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; margin-left:6px; color:#ff6a6a; border:1px solid #ff6a6a; background:rgba(255,0,0,.08); }
-    .profile-view { display:grid; grid-template-columns:1fr; gap:14px; }
-    .profile-cover { height:140px; border-radius:14px; border:1px solid rgba(255,255,255,.06); background:#243443; background-size:cover; background-position:center; }
-    .profile-main { display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start; }
-    .profile-main .avatar { width:86px; height:86px; min-width:86px; font-size:32px; }
-    .color-row { display:grid; grid-template-columns:1fr 120px; gap:12px; align-items:center; }
-
-    .toast { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); background:#1d2c39; border:1px solid #2a4257; color:var(--text); padding:12px 16px; border-radius:10px; z-index:100; opacity:0; pointer-events:none; transition:.18s ease; }
-    .toast.show { opacity:1; }
-
-    @media (max-width:980px) {
-      .mobile-only { display:inline-flex; }
-      .app-shell { grid-template-columns:1fr; }
-      .sidebar, .main { height:100svh; }
-      body:not(.mobile-chat-open) .main { display:none; }
-      body.mobile-chat-open .sidebar { display:none; }
-      .composer-row { grid-template-columns:1fr auto; align-items:center; }
+    html {
+      min-height: 100%;
+      background: #000;
+      scrollbar-color: #2a2a2a #0b0b0b;
+      scrollbar-width: thin;
+      overflow-x: hidden;
     }
-    @media (max-width:900px) {
-      .auth-card { grid-template-columns:1fr; }
-      .auth-side { border-right:0; border-bottom:1px solid var(--line); }
-      .field-row, .row, .color-row { grid-template-columns:1fr; }
-      .profile-main { grid-template-columns:1fr; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        url("https://i.ibb.co/gLrbwGS3/2026-03-20-181434.png") center center / cover no-repeat fixed;
+      color: var(--text);
+      min-height: 100vh;
+      background-color: #000;
+      overflow-x: hidden;
     }
-  
-    .wallet-grid { display:grid; gap:16px; }
-    .wallet-balance-card { padding:18px; border-radius:18px; background:linear-gradient(135deg,#1f2130,#171923); border:1px solid rgba(255,255,255,.06); }
-    .wallet-balance-card .sum { font-size:46px; font-weight:900; letter-spacing:-.04em; }
-    .wallet-actions { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-    .wallet-actions .btn { width:100%; }
-    .wallet-shop-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-    .wallet-card { padding:14px; border-radius:18px; background:#1a1d24; border:1px solid rgba(255,255,255,.06); display:grid; gap:12px; }
-    .wallet-preview { height:110px; border-radius:14px; border:1px solid rgba(255,255,255,.06); display:grid; place-items:center; font-size:54px; }
-    .wallet-price { color:#f6d15a; font-weight:900; }
-    .wallet-owned { color:#8bf0a6; font-size:13px; font-weight:800; }
-    .wallet-badge { display:inline-flex; padding:4px 9px; border-radius:999px; background:rgba(124,58,237,.18); color:#d6b8ff; font-size:12px; font-weight:800; }
-    .profile-public { display:grid; gap:18px; }
-    .profile-hero { position:relative; min-height:420px; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
-    .profile-hero::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.38)); pointer-events:none; }
-    .profile-hero-inner { position:relative; z-index:1; min-height:420px; display:grid; place-items:center; padding:24px; text-align:center; }
-    .profile-back-btn { position:absolute; top:18px; left:18px; width:54px; height:54px; border:none; border-radius:50%; background:rgba(20,22,28,.72); color:#fff; font-size:30px; cursor:pointer; z-index:2; }
-    .profile-avatar-stage { position:relative; width:280px; height:280px; margin:0 auto 18px; }
-    .profile-avatar-center { position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%); width:180px; height:180px; min-width:180px; border-radius:50%; background:transparent; display:grid; place-items:center; box-shadow:none; overflow:visible; }
-    .profile-avatar-center .avatar { width:180px; height:180px; min-width:180px; border-radius:50%; font-size:72px; box-shadow:0 18px 40px rgba(0,0,0,.24); }
-    .floating-gift { position:absolute; width:52px; height:52px; border-radius:16px; background:rgba(23,24,28,.72); backdrop-filter:blur(6px); display:grid; place-items:center; font-size:30px; box-shadow:0 10px 25px rgba(0,0,0,.22); animation:giftFloat 3.6s ease-in-out infinite; }
-    .floating-gift.g1 { top:20px; left:46px; animation-delay:.1s; }
-    .floating-gift.g2 { top:22px; right:46px; animation-delay:.7s; }
-    .floating-gift.g3 { left:10px; top:118px; animation-delay:1.2s; }
-    .floating-gift.g4 { right:10px; top:118px; animation-delay:1.8s; }
-    .floating-gift.g5 { left:56px; bottom:18px; animation-delay:2.4s; }
-    .floating-gift.g6 { right:56px; bottom:18px; animation-delay:3s; }
-    @keyframes giftFloat { 0%,100%{ transform:translateY(0px) rotate(0deg);} 50%{ transform:translateY(-8px) rotate(2deg);} }
-    .profile-public-name { font-size:58px; font-weight:900; line-height:1.02; letter-spacing:-.04em; }
-    .profile-public-status { color:#d0d3d9; font-size:18px; font-weight:700; margin-top:8px; }
-    .profile-public-grid { display:grid; gap:16px; }
-    .profile-public-card { background:#17191e; border:1px solid rgba(255,255,255,.06); border-radius:18px; padding:20px; }
-    .channel-preview-card { display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; background:#17191e; border:1px solid rgba(255,255,255,.06); border-radius:18px; padding:16px; }
-    .channel-preview-card .avatar { width:74px; height:74px; min-width:74px; border-radius:50%; font-size:30px; }
-    .username-box { display:grid; gap:6px; }
-    @media (max-width:760px){ .wallet-shop-grid{grid-template-columns:1fr;} .wallet-actions{grid-template-columns:1fr;} }
 
-  
-    #viewProfileModal .modal-head { display:none; }
-    #refreshBtn, #blockUserBtn { display:none !important; }
-    .btn.btn-primary { background:#f1c94d !important; color:#ffffff !important; }
-    .btn.btn-secondary { background:#1f2228 !important; color:#ffffff !important; }
-    .modal-card { background:#17191e; }
-    body { background:#141518; }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    .modal-box::-webkit-scrollbar,
+    .profile-box::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
 
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    .modal-box::-webkit-scrollbar-track,
+    .profile-box::-webkit-scrollbar-track {
+      background: #0b0b0b;
+    }
+
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    .modal-box::-webkit-scrollbar-thumb,
+    .profile-box::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 10px;
+      border: 2px solid #0b0b0b;
+    }
+
+    .page {
+      width: min(1200px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 16px 0 28px;
+    }
+
+    .search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: transparent;
+      padding-bottom: 0;
+      margin-bottom: 10px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr 52px;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(15, 15, 15, 0.78);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      position: relative;
+      min-height: 48px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      fill: #7d7d7d;
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+    }
+
+    .search-box input::placeholder {
+      color: #7f7f7f;
+    }
+
+    .lang-box {
+      position: relative;
+      min-width: 52px;
+      height: 48px;
+    }
+
+    .lang-toggle {
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 15, 15, 0.78);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 140px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: none;
+      z-index: 50;
+    }
+
+    .lang-menu.show {
+      display: block;
+    }
+
+    .lang-option {
+      width: 100%;
+      background: transparent;
+      color: white;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .lang-option:last-child {
+      border-bottom: none;
+    }
+
+    .lang-option:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .top-rated-section {
+      margin: 12px 0 14px;
+    }
+
+    .top-rated-card {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      min-height: 220px;
+      background: #0d1320;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+      text-align: left;
+      transition: 0.15s ease;
+    }
+
+    .top-rated-card:hover {
+      transform: translateY(-1px);
+    }
+
+    .top-rated-bg {
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      transform: scale(1.02);
+    }
+
+    .top-rated-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(5,10,20,0.92) 0%, rgba(5,10,20,0.62) 48%, rgba(5,10,20,0.22) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.38));
+    }
+
+    .top-rated-content {
+      position: relative;
+      z-index: 2;
+      padding: 22px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .top-rated-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(243,195,22,0.16);
+      color: #ffe27d;
+      border: 1px solid rgba(243,195,22,0.28);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .top-rated-name {
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.02;
+      font-weight: 900;
+      color: #fff;
+      max-width: 700px;
+      text-shadow: 0 3px 14px rgba(0,0,0,0.35);
+    }
+
+    .top-rated-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .top-rated-genre,
+    .top-rated-score,
+    .top-rated-count {
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .top-rated-genre {
+      background: rgba(255,255,255,0.10);
+      color: #f2f2f2;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .top-rated-score {
+      background: rgba(243,195,22,0.95);
+      color: #171717;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .top-rated-count {
+      background: rgba(0,0,0,0.34);
+      color: #dfe6f3;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .suggestions {
+      margin-top: 8px;
+      background: #3f4658;
+      border-radius: 14px;
+      overflow: hidden;
+      display: none;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .suggestions.show {
+      display: block;
+    }
+
+    .suggestions-title {
+      padding: 14px 16px 8px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #eef3ff;
+    }
+
+    .suggestion-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      padding: 10px 14px;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .mini-poster {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #101010, #2a2a2a);
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+    }
+
+    .mini-poster.image {
+      padding: 0;
+      background: #111;
+    }
+
+    .mini-poster.image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mini-meta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .mini-title {
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: bold;
+    }
+
+    .mini-sub {
+      color: #d7dbea;
+      font-size: 14px;
+    }
+
+    .catalog-view.hidden,
+    .results-view.hidden {
+      display: none;
+    }
+
+    .store-grid {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 10px;
+    }
+
+    .left-column,
+    .right-column,
+    .bottom-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bottom-row {
+      margin-top: 10px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .game-tile {
+      background: #e9e9e9;
+      color: #111;
+      border: 3px solid #1a1a1a;
+      min-height: 180px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .game-tile:hover {
+      transform: translateY(-1px);
+    }
+
+    .game-tile.small {
+      min-height: 125px;
+    }
+
+    .game-tile.bottom {
+      min-height: 125px;
+    }
+
+    .tile-poster {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #161616, #2f2f2f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(18px, 3vw, 34px);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .tile-poster.image {
+      padding: 0;
+      background: #0f0f0f;
+    }
+
+    .tile-poster.image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tile-overlay {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.76));
+      padding: 16px;
+      min-height: 92px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .tile-title {
+      font-size: 24px;
+      line-height: 1.08;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .game-tile.small .tile-title,
+    .game-tile.bottom .tile-title {
+      font-size: 18px;
+    }
+
+    .tile-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #d3d3d3;
+      line-height: 1.4;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .results-title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .results-count {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .results-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      gap: 0;
+      background: var(--blue-panel);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: white;
+      text-align: left;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .result-item:hover {
+      background: #142033;
+    }
+
+    .result-poster {
+      width: 100%;
+      height: 100%;
+      min-height: 120px;
+      background: #0b1020;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-weight: 900;
+      font-size: 28px;
+      letter-spacing: 0.08em;
+    }
+
+    .result-poster.image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .result-main {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .result-name {
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: bold;
+    }
+
+    .result-genre {
+      color: #cfd7e8;
+      font-size: 14px;
+    }
+
+    .result-desc {
+      color: #aeb7c7;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .result-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 130px;
+      padding: 14px;
+      color: #d8deeb;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .empty-state {
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      color: var(--muted);
+      display: none;
+    }
+
+    .empty-state.show {
+      display: block;
+    }
+
+    .modal,
+    .profile-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal {
+      z-index: 100;
+    }
+
+    .profile-modal {
+      z-index: 130;
+      background: rgba(0,0,0,0.84);
+    }
+
+    .modal.active,
+    .profile-modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(1100px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      background: #151515;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .profile-box {
+      width: min(900px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      background: #111111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-banner {
+      height: 240px;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    .modal-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.55)),
+        linear-gradient(90deg, rgba(0,0,0,0.22), rgba(0,0,0,0.05));
+    }
+
+    .modal-head {
+      padding: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: #101010;
+    }
+
+    .modal-genre {
+      display: inline-block;
+      background: #2a2a2a;
+      color: #d4d4d4;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 30px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .modal-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .meta-card {
+      background: #111111;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .meta-label {
+      font-size: 12px;
+      color: #8f8f8f;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: bold;
+    }
+
+    .meta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: none;
+      color: #ffd84c;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+    }
+
+    .meta-link:hover {
+      color: #fff2b2;
+    }
+
+    .warning-box {
+      display: none;
+      margin-bottom: 16px;
+      background: rgba(243,195,22,0.12);
+      border: 1px solid rgba(243,195,22,0.28);
+      color: #ffe8a3;
+      border-radius: 14px;
+      padding: 14px 16px;
+      line-height: 1.6;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    .warning-box.show {
+      display: block;
+    }
+
+    .modal-body p {
+      color: #b5b5b5;
+      line-height: 1.7;
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
+    .modal-screens {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      padding: 18px;
+      background: #111111;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .screen-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a1a, #303030);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d9d9d9;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .screen-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-buttons,
+    .profile-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn-yellow,
+    .btn-dark {
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-yellow {
+      background: var(--yellow);
+      color: #161616;
+    }
+
+    .btn-yellow:hover {
+      background: var(--yellow-hover);
+    }
+
+    .btn-dark {
+      background: #252525;
+      color: #f0f0f0;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .code-box {
+      display: none;
+      margin-top: 16px;
+      background: #101010;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .code-box.show {
+      display: block;
+    }
+
+    .code-label {
+      font-size: 13px;
+      color: #d7d7d7;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .code-value {
+      font-family: "Courier New", monospace;
+      color: #fff0a4;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .code-note {
+      color: #8f8f8f;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .profile-cover {
+      height: 180px;
+      position: relative;
+      background:
+        linear-gradient(135deg, rgba(243,195,22,0.22), rgba(28,28,28,0.92)),
+        #151515 center center / cover no-repeat;
+    }
+
+    .profile-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.55));
+    }
+
+    .profile-head {
+      position: relative;
+      margin-top: -52px;
+      padding: 0 18px 18px;
+      z-index: 2;
+    }
+
+    .profile-avatar {
+      width: 104px;
+      height: 104px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
+      border: 4px solid #111111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      color: #ffe27d;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+
+    .profile-name {
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .profile-followers {
+      color: #cfd7e8;
+      font-size: 15px;
+    }
+
+    .profile-body {
+      padding: 0 18px 18px;
+    }
+
+    .profile-section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .profile-games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .profile-game-card {
+      background: #141414;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.15s ease;
+    }
+
+    .profile-game-card:hover {
+      transform: translateY(-1px);
+      background: #191919;
+    }
+
+    .profile-game-poster {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0f0f0f;
+      overflow: hidden;
+    }
+
+    .profile-game-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-game-body {
+      padding: 12px;
+    }
+
+    .profile-game-title {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .profile-game-sub {
+      font-size: 13px;
+      color: #b4bccd;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 980px) {
+      .store-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .result-item {
+        grid-template-columns: 180px 1fr;
+      }
+
+      .result-side {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        padding-top: 0;
+      }
+
+      .modal-box {
+        width: min(960px, 100%);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .modal-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-banner {
+        height: 180px;
+      }
+
+      .profile-name {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 16px, 1200px);
+        padding: 10px 0 18px;
+      }
+
+      .search-row {
+        grid-template-columns: 1fr 48px;
+        gap: 8px;
+      }
+
+      .search-box {
+        min-height: 46px;
+        padding: 11px 12px;
+      }
+
+      .lang-box {
+        min-width: 48px;
+        height: 46px;
+      }
+
+      .suggestion-item {
+        grid-template-columns: 92px 1fr;
+      }
+
+      .mini-title {
+        font-size: 16px;
+      }
+
+      .bottom-row {
+        grid-template-columns: 1fr;
+      }
+
+      .game-tile,
+      .game-tile.small,
+      .game-tile.bottom {
+        min-height: 145px;
+      }
+
+      .tile-title {
+        font-size: 20px;
+      }
+
+      .result-item {
+        grid-template-columns: 1fr;
+      }
+
+      .result-poster {
+        min-height: 150px;
+      }
+
+      .modal-title {
+        font-size: 24px;
+      }
+
+      .modal-screens {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-yellow,
+      .btn-dark {
+        width: 100%;
+      }
+
+      .top-rated-name {
+        font-size: 24px;
+      }
+
+      .top-rated-content {
+        padding: 16px;
+      }
+
+      .top-rated-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile-cover {
+        height: 150px;
+      }
+
+      .profile-avatar {
+        width: 88px;
+        height: 88px;
+        font-size: 28px;
+      }
+
+      .profile-games-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="toast" class="toast"></div>
-  <div id="menuOverlay" class="menu-overlay"></div>
-  <aside id="leftMenu" class="left-menu">
-    <div class="menu-header">
-      <div class="menu-user">
-        <div id="menuAvatar" class="avatar fallback">M</div>
+  <div class="page">
+    <div class="search-wrap">
+      <div class="search-row">
         <div>
-          <div id="menuName" class="item-name">—</div>
-          <div id="menuUsername" class="tiny">—</div>
-        </div>
-      </div>
-    </div>
-    <div class="menu-list">
-      <div id="menuProfile" class="menu-item">👤 <span>Мой профиль</span></div>
-      <div id="menuWallet" class="menu-item">💳 <span>Кошелёк</span></div>
-      <div id="menuShop" class="menu-item">🎁 <span>NFT подарки</span></div>
-      <div id="menuNewChat" class="menu-item">💬 <span>Новый чат</span></div>
-      <div id="menuNewChannel" class="menu-item">📢 <span>Новый канал</span></div>
-      <div id="menuLogout" class="menu-item">🚪 <span>Выйти</span></div>
-    </div>
-    <div class="menu-footer">Каналы + блокировка + реакции</div>
-  </aside>
-
-  <section id="authView" class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-side">
-        <h1>Messenger</h1>
-        <p>Полный код с каналами, блокировкой пользователей, подписками, просмотрами постов и реакциями.</p>
-      </div>
-      <div class="auth-main">
-        <div class="tabs">
-          <button id="registerTab" class="tab-btn active">Регистрация</button>
-          <button id="loginTab" class="tab-btn">Вход</button>
-        </div>
-        <div id="registerForm" class="field-grid">
-          <div class="field-row">
-            <input id="regNickname" placeholder="Никнейм" />
-            <input id="regUsername" placeholder="Username" />
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"></path>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Поиск" autocomplete="off" />
           </div>
-          <input id="regEmail" type="email" placeholder="Email" />
-          <input id="regPassword" type="password" placeholder="Пароль" />
-          <button id="registerBtn" class="btn btn-primary">Создать аккаунт</button>
-          <div id="registerStatus" class="status"></div>
-        </div>
-        <div id="loginForm" class="field-grid hidden">
-          <input id="loginEmail" type="email" placeholder="Email" />
-          <input id="loginPassword" type="password" placeholder="Пароль" />
-          <button id="loginBtn" class="btn btn-primary">Войти</button>
-          <div id="loginStatus" class="status"></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="appView" class="app-shell hidden">
-    <aside class="sidebar">
-      <div class="sidebar-top">
-        <div class="sidebar-top-row">
-          <button id="menuBtn" class="icon-btn" title="Меню">☰</button>
-          <input id="chatSearch" class="search-input" placeholder="Поиск" />
-          <button id="newActionBtn" class="btn btn-primary">+</button>
-        </div>
-        <div class="mode-tabs">
-          <button id="modeChatsBtn" class="mode-tab active">Чаты</button>
-          <button id="modeChannelsBtn" class="mode-tab">Каналы</button>
-        </div>
-      </div>
-      <div id="chatList" class="list-wrap"></div>
-      <div id="channelList" class="list-wrap hidden"></div>
-    </aside>
-
-    <main class="main">
-      <div class="topbar">
-        <div id="activeProfileChip" class="topbar-left">
-          <button id="mobileBackBtn" class="icon-btn mobile-only" title="Назад">←</button>
-          <div id="activeChatAvatar" class="avatar fallback">C</div>
-          <div class="title-wrap">
-            <div id="activeChatTitle" class="title-main">Выбери чат</div>
-            <div id="activeChatSubtitle" class="title-sub">Профиль и сообщения</div>
+          <div class="suggestions" id="suggestionsBox">
+            <div class="suggestions-title" id="suggestionsTitle">Search results</div>
+            <div id="suggestionsList"></div>
           </div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <button id="channelSubscribeBtn" class="btn btn-secondary hidden">Подписаться</button>
-          <button id="channelManageBtn" class="btn btn-secondary hidden">Управление</button>
-          <button id="blockUserBtn" class="btn btn-danger hidden">Блок</button>
-          <button id="refreshBtn" class="btn btn-secondary">Обновить</button>
+
+        <div class="lang-box">
+          <button class="lang-toggle" id="langToggle" type="button">RU</button>
+          <div class="lang-menu" id="langMenu">
+            <button class="lang-option" type="button" data-lang="ru">Русский</button>
+            <button class="lang-option" type="button" data-lang="zh">中文</button>
+            <button class="lang-option" type="button" data-lang="en">English</button>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div id="messagesWrap" class="content-scroll">
-        <div class="empty"><div>Выбери чат или канал.</div></div>
-      </div>
-
-      <div class="composer">
-        <div class="composer-row">
-          <textarea id="messageInput" placeholder="Сообщение или пост"></textarea>
-          <button id="sendBtn" class="btn btn-primary">Отправить</button>
+    <div class="top-rated-section" id="topRatedSection">
+      <button class="top-rated-card" id="topRatedCard" type="button">
+        <div class="top-rated-bg" id="topRatedBg"></div>
+        <div class="top-rated-content">
+          <div class="top-rated-kicker" id="topRatedKicker">Топ игры по оценкам</div>
+          <div class="top-rated-name" id="topRatedName"></div>
+          <div class="top-rated-bottom">
+            <div class="top-rated-genre" id="topRatedGenre"></div>
+            <div class="top-rated-score" id="topRatedScore"></div>
+            <div class="top-rated-count" id="topRatedCount"></div>
+          </div>
         </div>
-      </div>
-    </main>
-  </section>
+      </button>
+    </div>
 
-  <div id="profileModal" class="modal">
-    <div class="modal-card">
+    <div class="catalog-view" id="catalogView">
+      <div id="catalog">
+        <div class="store-grid">
+          <div class="left-column" id="leftColumn"></div>
+          <div class="right-column" id="rightColumn"></div>
+        </div>
+
+        <div class="bottom-row" id="bottomRow"></div>
+      </div>
+    </div>
+
+    <div class="results-view hidden" id="resultsView">
+      <div class="results-header">
+        <div class="results-title" id="resultsTitle">Результаты поиска</div>
+        <div class="results-count" id="resultsCount"></div>
+      </div>
+      <div class="results-list" id="resultsList"></div>
+    </div>
+
+    <div class="empty-state" id="emptyState">Ничего не найдено. Попробуй другой запрос.</div>
+  </div>
+
+  <div class="modal" id="gameModal">
+    <div class="modal-box">
+      <div class="modal-banner" id="modalBanner"></div>
+
       <div class="modal-head">
-        <h2 style="margin:0;">Мой профиль</h2>
-        <button class="btn btn-secondary" data-close="profileModal">Закрыть</button>
+        <div class="modal-genre" id="modalGenre"></div>
+        <div class="modal-title" id="modalTitle"></div>
       </div>
-      <div class="field-grid">
-        <div class="row">
-          <input id="profileNickname" placeholder="Никнейм" />
-          <input id="profileUsername" placeholder="Username" />
+
+      <div class="modal-body">
+        <div class="modal-info-grid">
+          <div class="meta-card">
+            <div class="meta-label" id="publisherLabel">Издатель</div>
+            <button class="meta-link" id="modalPublisherBtn" type="button"></button>
+          </div>
+
+          <div class="meta-card">
+            <div class="meta-label" id="developerLabel">Разработчик</div>
+            <button class="meta-link" id="modalDeveloperBtn" type="button"></button>
+          </div>
         </div>
-        <textarea id="profileBio" placeholder="О себе"></textarea>
-        <input id="profileEmail" readonly />
-        <div class="color-row">
-          <input id="profileAvatarEmoji" placeholder="Эмодзи для аватарки, например 😎" />
-          <input id="profileAvatarBg" type="color" value="#2a3b4a" />
+
+        <div class="warning-box" id="modalWarning"></div>
+
+        <p id="modalDescription"></p>
+
+        <div class="modal-buttons">
+          <button class="btn-yellow" id="getCodeBtn" type="button">Получить код</button>
+          <button class="btn-dark" id="closeModalBtn" type="button">Закрыть</button>
         </div>
-        <input id="profileCover" placeholder="Фон профиля: цвет, градиент или URL картинки" />
-        <button id="saveProfileBtn" class="btn btn-primary">Сохранить профиль</button>
+
+        <div class="code-box" id="codeBox">
+          <div class="code-label" id="codeLabel">Код для лаунчера</div>
+          <div class="code-value" id="modalCode"></div>
+          <div class="code-note" id="codeNote">Используйте этот код в физическом лаунчере.</div>
+        </div>
       </div>
+
+      <div class="modal-screens" id="modalScreens"></div>
     </div>
   </div>
 
-  <div id="viewProfileModal" class="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 style="margin:0;">Профиль</h2>
-        <button class="btn btn-secondary" data-close="viewProfileModal">Закрыть</button>
-      </div>
-      <div id="viewProfileContent"></div>
-    </div>
-  </div>
+  <div class="profile-modal" id="profileModal">
+    <div class="profile-box">
+      <div class="profile-cover" id="profileCover"></div>
 
-  <div id="newChatModal" class="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 style="margin:0;">Новый чат</h2>
-        <button class="btn btn-secondary" data-close="newChatModal">Закрыть</button>
+      <div class="profile-head">
+        <div class="profile-avatar" id="profileAvatar"></div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-followers" id="profileFollowers"></div>
       </div>
-      <input id="userSearch" placeholder="Поиск пользователя" />
-      <div id="userList" style="margin-top:14px;"></div>
-    </div>
-  </div>
 
-  <div id="newChannelModal" class="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 style="margin:0;">Новый канал</h2>
-        <button class="btn btn-secondary" data-close="newChannelModal">Закрыть</button>
-      </div>
-      <div class="field-grid">
-        <input id="channelTitleInput" placeholder="Название канала" />
-        <textarea id="channelDescriptionInput" placeholder="Описание канала"></textarea>
-        <div class="color-row">
-          <input id="channelEmojiInput" placeholder="Эмодзи аватарки канала" />
-          <input id="channelBgInput" type="color" value="#2a3b4a" />
-        </div>
-      </div>
-      <div style="margin-top:14px;">
-        <button id="createChannelBtn" class="btn btn-primary">Создать канал</button>
-      </div>
-    </div>
-  </div>
+      <div class="profile-body">
+        <div class="profile-section-title" id="profileGamesTitle">Игры</div>
+        <div class="profile-games-grid" id="profileGamesGrid"></div>
 
-  <div id="channelManageModal" class="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 style="margin:0;">Управление каналом</h2>
-        <button class="btn btn-secondary" data-close="channelManageModal">Закрыть</button>
-      </div>
-      <div id="channelMembersList"></div>
-    </div>
-  </div>
-
-
-  <div id="walletModal" class="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 style="margin:0;">Кошелёк</h2>
-        <button class="btn btn-secondary" data-close="walletModal">Закрыть</button>
-      </div>
-      <div class="wallet-grid">
-        <div class="wallet-balance-card">
-          <div class="tiny">Баланс</div>
-          <div class="sum"><span id="walletBalanceValue">200</span> ₽</div>
-          <div class="tiny" style="margin-top:8px;">На эти деньги можно покупать фоны и NFT‑подарки.</div>
-        </div>
-        <div class="wallet-actions">
-          <button id="walletOpenProfile" class="btn btn-secondary">Открыть профиль</button>
-          <button id="walletOpenShop" class="btn btn-primary">Открыть магазин</button>
-        </div>
-        <div class="user-row" style="border-bottom:none; padding:0;">
-          <div><div class="item-name">Купленные фоны</div><div class="tiny" id="walletOwnedBgCount">0</div></div>
-          <div><div class="item-name">NFT подарки</div><div class="tiny" id="walletOwnedGiftCount">0</div></div>
+        <div class="profile-actions">
+          <button class="btn-dark" id="closeProfileBtn" type="button">Закрыть профиль</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="nftShopModal" class="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 style="margin:0;">NFT подарки и фоны</h2>
-        <button class="btn btn-secondary" data-close="nftShopModal">Закрыть</button>
-      </div>
-      <div style="display:grid; gap:18px;">
-        <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;"><div class="item-name">Фоны профиля</div><div class="wallet-badge"><span id="walletBalanceBadge">200</span> ₽</div></div>
-          <div id="walletBackgrounds" class="wallet-shop-grid"></div>
-        </div>
-        <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;"><div class="item-name">NFT подарки</div><div class="tiny">Они будут видны в профиле</div></div>
-          <div id="walletGifts" class="wallet-shop-grid"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    const SUPABASE_URL = "https://tsfjqtdoxfmxadxuivpg.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_yXZd7wd5aVNpuxjt7-ax8g_aejudNte";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-
-    const WALLET_KEY = 'dgram_wallet_module_v2';
-    const SHOP_BACKGROUNDS = [
-      { id:'bg-default', title:'Default Dark', price:0, css:'linear-gradient(135deg,#1a1b20,#131417)' },
-      { id:'bg-violet', title:'Purple Neon', price:60, css:'linear-gradient(135deg,#1e1431,#4c1d95,#0f0f12)' },
-      { id:'bg-gold', title:'Gold Night', price:80, css:'linear-gradient(135deg,#17110a,#5a4311,#111214)' },
-      { id:'bg-blue', title:'Blue Pulse', price:70, css:'linear-gradient(135deg,#0e1835,#1d4ed8,#101217)' }
-    ];
-    const SHOP_GIFTS = [
-      { id:'gift-star', title:'Star NFT', emoji:'⭐', price:35, bg:'#47310e' },
-      { id:'gift-gem', title:'Gem NFT', emoji:'💎', price:50, bg:'#13324a' },
-      { id:'gift-dragon', title:'Dragon NFT', emoji:'🐉', price:75, bg:'#2f233f' },
-      { id:'gift-crown', title:'Crown NFT', emoji:'👑', price:90, bg:'#5a4311' },
-      { id:'gift-rocket', title:'Rocket NFT', emoji:'🚀', price:110, bg:'#1e3a8a' },
-      { id:'gift-scroll', title:'Scroll NFT', emoji:'📜', price:65, bg:'#3f2f1e' }
-    ];
-    function walletDefault(){ return { balance:200, ownedBackgrounds:['bg-default'], ownedGifts:[], activeBackground:'bg-default', activeGift:null }; }
-    function loadWallet(){ try{ return { ...walletDefault(), ...(JSON.parse(localStorage.getItem(WALLET_KEY)||'{}')) }; }catch{return walletDefault()} }
-    function saveWallet(){ localStorage.setItem(WALLET_KEY, JSON.stringify(state.wallet)); }
-
-    const PREFIX_BY_USERNAME = {
-      link: { type: 'mod', label: 'M' },
-      dexxure: { type: 'mod', label: 'M' },
-      adolfhitler: { type: 'fake', label: 'FAKE', notice: 'На этот аккаунт поступило множество жалоб. Профиль может вводить пользователей в заблуждение и выдавать себя за другое лицо.' },
-    };
-
-    const state = {
-      user: null,
-      myProfile: null,
-      profiles: [],
-      profilesMap: new Map(),
-      chats: [],
-      channels: [],
-      activeMessages: [],
-      activeProfileUserId: null,
-      activeChatId: null,
-      activeChannelId: null,
-      activeMode: 'chats',
-      activeChannelRole: null,
-      polling: null,
-      busySend: false,
-      busyProfileSave: false,
-      unreadCounts: {},
-      lastMessageSeenAt: null,
-      menuOpen: false,
-      wallet: loadWallet(),
-      messagesLoadToken: 0,
-      postsLoadToken: 0,
-      booting: false,
-      tickBusy: false,
-      blockedSet: new Set(),
-      blockedBySet: new Set(),
-      channelSubsMap: new Map(),
-    };
-
-    const els = {
-      toast: document.getElementById('toast'),
-      authView: document.getElementById('authView'),
-      appView: document.getElementById('appView'),
-      registerTab: document.getElementById('registerTab'),
-      loginTab: document.getElementById('loginTab'),
-      registerForm: document.getElementById('registerForm'),
-      loginForm: document.getElementById('loginForm'),
-      regNickname: document.getElementById('regNickname'),
-      regUsername: document.getElementById('regUsername'),
-      regEmail: document.getElementById('regEmail'),
-      regPassword: document.getElementById('regPassword'),
-      registerBtn: document.getElementById('registerBtn'),
-      registerStatus: document.getElementById('registerStatus'),
-      loginEmail: document.getElementById('loginEmail'),
-      loginPassword: document.getElementById('loginPassword'),
-      loginBtn: document.getElementById('loginBtn'),
-      loginStatus: document.getElementById('loginStatus'),
-      menuBtn: document.getElementById('menuBtn'),
-      menuOverlay: document.getElementById('menuOverlay'),
-      leftMenu: document.getElementById('leftMenu'),
-      menuAvatar: document.getElementById('menuAvatar'),
-      menuName: document.getElementById('menuName'),
-      menuUsername: document.getElementById('menuUsername'),
-      menuProfile: document.getElementById('menuProfile'),
-      menuWallet: document.getElementById('menuWallet'),
-      menuShop: document.getElementById('menuShop'),
-      menuNewChat: document.getElementById('menuNewChat'),
-      menuNewChannel: document.getElementById('menuNewChannel'),
-      menuLogout: document.getElementById('menuLogout'),
-      chatSearch: document.getElementById('chatSearch'),
-      newActionBtn: document.getElementById('newActionBtn'),
-      modeChatsBtn: document.getElementById('modeChatsBtn'),
-      modeChannelsBtn: document.getElementById('modeChannelsBtn'),
-      chatList: document.getElementById('chatList'),
-      channelList: document.getElementById('channelList'),
-      activeProfileChip: document.getElementById('activeProfileChip'),
-      activeChatAvatar: document.getElementById('activeChatAvatar'),
-      activeChatTitle: document.getElementById('activeChatTitle'),
-      activeChatSubtitle: document.getElementById('activeChatSubtitle'),
-      mobileBackBtn: document.getElementById('mobileBackBtn'),
-      refreshBtn: document.getElementById('refreshBtn'),
-      channelSubscribeBtn: document.getElementById('channelSubscribeBtn'),
-      channelManageBtn: document.getElementById('channelManageBtn'),
-      blockUserBtn: document.getElementById('blockUserBtn'),
-      messagesWrap: document.getElementById('messagesWrap'),
-      messageInput: document.getElementById('messageInput'),
-      sendBtn: document.getElementById('sendBtn'),
-      profileModal: document.getElementById('profileModal'),
-      profileNickname: document.getElementById('profileNickname'),
-      profileUsername: document.getElementById('profileUsername'),
-      profileBio: document.getElementById('profileBio'),
-      profileEmail: document.getElementById('profileEmail'),
-      profileAvatarEmoji: document.getElementById('profileAvatarEmoji'),
-      profileAvatarBg: document.getElementById('profileAvatarBg'),
-      profileCover: document.getElementById('profileCover'),
-      saveProfileBtn: document.getElementById('saveProfileBtn'),
-      walletModal: document.getElementById('walletModal'),
-      nftShopModal: document.getElementById('nftShopModal'),
-      walletBalanceValue: document.getElementById('walletBalanceValue'),
-      walletBalanceBadge: document.getElementById('walletBalanceBadge'),
-      walletOwnedBgCount: document.getElementById('walletOwnedBgCount'),
-      walletOwnedGiftCount: document.getElementById('walletOwnedGiftCount'),
-      walletBackgrounds: document.getElementById('walletBackgrounds'),
-      walletGifts: document.getElementById('walletGifts'),
-      walletOpenProfile: document.getElementById('walletOpenProfile'),
-      walletOpenShop: document.getElementById('walletOpenShop'),
-      saveProfileBtn: document.getElementById('saveProfileBtn'),
-      viewProfileModal: document.getElementById('viewProfileModal'),
-      viewProfileContent: document.getElementById('viewProfileContent'),
-      newChatModal: document.getElementById('newChatModal'),
-      userSearch: document.getElementById('userSearch'),
-      userList: document.getElementById('userList'),
-      newChannelModal: document.getElementById('newChannelModal'),
-      channelTitleInput: document.getElementById('channelTitleInput'),
-      channelDescriptionInput: document.getElementById('channelDescriptionInput'),
-      channelEmojiInput: document.getElementById('channelEmojiInput'),
-      channelBgInput: document.getElementById('channelBgInput'),
-      createChannelBtn: document.getElementById('createChannelBtn'),
-      channelManageModal: document.getElementById('channelManageModal'),
-      channelMembersList: document.getElementById('channelMembersList'),
-    };
-
-    function toast(text){els.toast.textContent=text;els.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>els.toast.classList.remove('show'),2200)}
-    function setStatus(el,text,isError=false){el.textContent=text;el.style.color=isError?'var(--danger)':'var(--muted)'}
-    function showModal(id){document.getElementById(id).classList.add('open')} function closeModals(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'))}
-    function openMenu(){state.menuOpen=true;els.leftMenu.classList.add('open');els.menuOverlay.classList.add('open')} function closeMenu(){state.menuOpen=false;els.leftMenu.classList.remove('open');els.menuOverlay.classList.remove('open')}
-    const escapeHtml=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-    const normalizeUsername=v=>String(v||'').trim().toLowerCase().replace(/[^a-z0-9_]/g,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'').slice(0,24);
-    function prefixBadge(profile){const key=profile?.username?.toLowerCase?.();const p=key?PREFIX_BY_USERNAME[key]:null;if(!p)return '';if(p.type==='fake')return `<span class="fake-badge">${escapeHtml(p.label)}</span>`;return `<span class="prefix-badge">${escapeHtml(p.label)}</span>`}
-    function avatarHTML(profile,size='normal'){const emoji=profile?.avatar_emoji?.trim();const bg=profile?.avatar_bg?.trim()||'#2a3b4a';const text=emoji||(profile?.nickname?.trim()?.[0]||profile?.username?.trim()?.[0]||'?');const big=size==='big'?'width:86px;height:86px;min-width:86px;font-size:32px;':'';return `<div class="avatar ${emoji?'':'fallback'}" style="background:${escapeHtml(bg)};${big}">${escapeHtml(text)}</div>`}
-    const displayName=(p,f='User')=>p?.nickname?.trim()||p?.username?.trim()||f;
-    const displayHandle=p=>p?.username?'@'+p.username:'без username';
-    const nameWithDecor=(p,f='User')=>`${escapeHtml(displayName(p,f))}${prefixBadge(p)}`;
-    const formatTime=v=>!v?'':new Date(v).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-    function coverStyle(profile){const v=(profile?.profile_cover||'').trim();if(!v)return 'background:#243443;';if(/^https?:\/\//i.test(v)||/^data:image\//i.test(v))return `background-image:url('${v.replace(/'/g,'%27')}');background-size:cover;background-position:center;`;return `background:${v};`;}
-
-    async function isUsernameTaken(username,excludeUserId=null){const uname=normalizeUsername(username);if(!uname)return false;const {data,error}=await supabase.from('profiles').select('user_id').eq('username',uname);if(error) throw error;return (data||[]).some(r=>r.user_id!==excludeUserId)}
-    function showAuth(){els.authView.classList.remove('hidden');els.appView.classList.add('hidden');document.body.classList.remove('mobile-chat-open');stopPolling();closeMenu()}
-    function showApp(){els.authView.classList.add('hidden');els.appView.classList.remove('hidden')}
-    function setAuthTab(tab){const reg=tab==='register';els.registerTab.classList.toggle('active',reg);els.loginTab.classList.toggle('active',!reg);els.registerForm.classList.toggle('hidden',!reg);els.loginForm.classList.toggle('hidden',reg)}
-    function stopPolling(){if(state.polling){clearInterval(state.polling);state.polling=null}}
-    function startPolling(){stopPolling();state.polling=setInterval(async()=>{if(state.tickBusy)return;state.tickBusy=true;try{if(state.activeMode==='chats'){await loadChats(false);if(state.activeChatId)await loadMessages(state.activeChatId,false);await checkForNewMessages()}else{await loadChannels();if(state.activeChannelId)await loadChannelPosts(state.activeChannelId,false)}}catch(e){console.error(e)}finally{state.tickBusy=false}},3000)}
-
-    async function registerUser(){try{setStatus(els.registerStatus,'Создание аккаунта...');const nickname=els.regNickname.value.trim()||'User';const username=normalizeUsername(els.regUsername.value||nickname);const email=els.regEmail.value.trim();const password=els.regPassword.value;if(!email||!password||password.length<6){setStatus(els.registerStatus,'Проверь данные.',true);return}if(await isUsernameTaken(username)){setStatus(els.registerStatus,'Этот username уже занят.',true);return}const {data,error}=await supabase.auth.signUp({email,password});if(error) throw error;if(data.session?.user){state.user=data.session.user;await supabase.from('profiles').upsert({user_id:state.user.id,nickname,username,bio:'',avatar_emoji:'',avatar_bg:'#2a3b4a',profile_cover:'',updated_at:new Date().toISOString()});await bootApp();toast('Аккаунт создан')}else setStatus(els.registerStatus,'Аккаунт создан. Подтверди почту, если включено подтверждение.',false)}catch(e){console.error(e);setStatus(els.registerStatus,e.message||'Ошибка регистрации',true)}}
-    async function loginUser(){try{setStatus(els.loginStatus,'Вход...');const {data,error}=await supabase.auth.signInWithPassword({email:els.loginEmail.value.trim(),password:els.loginPassword.value});if(error)throw error;state.user=data.user;await bootApp();toast('Вход выполнен')}catch(e){console.error(e);setStatus(els.loginStatus,e.message||'Ошибка входа',true)}}
-    async function logoutUser(){await supabase.auth.signOut();state.user=null;state.myProfile=null;state.activeChatId=null;state.activeChannelId=null;state.activeMessages=[];state.unreadCounts={};state.lastMessageSeenAt=null;renderEmpty();showAuth();toast('Выход выполнен')}
-    async function ensureMyProfile(){const {data,error}=await supabase.from('profiles').select('*').eq('user_id',state.user.id).maybeSingle();if(error)throw error;if(data){state.myProfile=data;return}const username=normalizeUsername((state.user.email||'user').split('@')[0]);const {data:created,error:createError}=await supabase.from('profiles').upsert({user_id:state.user.id,nickname:username,username,bio:'',avatar_emoji:'',avatar_bg:'#2a3b4a',profile_cover:'',updated_at:new Date().toISOString()}).select().single();if(createError)throw createError;state.myProfile=created}
-    async function loadProfiles(){const {data,error}=await supabase.from('profiles').select('*').order('nickname',{ascending:true});if(error)throw error;state.profiles=data||[];state.profilesMap=new Map(state.profiles.map(p=>[p.user_id,p]));state.myProfile=state.profilesMap.get(state.user.id)||state.myProfile}
-    async function loadBlocks(){const {data,error}=await supabase.from('blocked_users').select('*').or(`blocker_id.eq.${state.user.id},blocked_user_id.eq.${state.user.id}`);if(error)return;state.blockedSet=new Set();state.blockedBySet=new Set();(data||[]).forEach(r=>{if(r.blocker_id===state.user.id)state.blockedSet.add(r.blocked_user_id);if(r.blocked_user_id===state.user.id)state.blockedBySet.add(r.blocker_id)})}
-    function renderSelf(){els.menuAvatar.outerHTML=avatarHTML(state.myProfile);const newAvatar=els.leftMenu.querySelector('.avatar');newAvatar.id='menuAvatar';els.menuAvatar=newAvatar;els.menuName.innerHTML=nameWithDecor(state.myProfile,'Me');els.menuUsername.textContent=displayHandle(state.myProfile)}
-    async function bootApp(){try{if(state.booting)return;state.booting=true;stopPolling();showApp();await ensureMyProfile();await loadProfiles();await loadBlocks();applyWalletAppearance();renderSelf();fillProfileForm();await loadChats(true);await loadChannels();if(!state.lastMessageSeenAt)state.lastMessageSeenAt=new Date().toISOString();startPolling()}finally{state.booting=false}}
-    function fillProfileForm(){els.profileNickname.value=state.myProfile?.nickname||'';els.profileUsername.value=state.myProfile?.username||'';els.profileBio.value=state.myProfile?.bio||'';els.profileEmail.value=state.user?.email||'';els.profileAvatarEmoji.value=state.myProfile?.avatar_emoji||'';els.profileAvatarBg.value=state.myProfile?.avatar_bg||'#2a3b4a';els.profileCover.value=state.myProfile?.profile_cover||''}
-    async function saveProfile(){if(state.busyProfileSave)return;state.busyProfileSave=true;els.saveProfileBtn.disabled=true;try{const username=normalizeUsername(els.profileUsername.value||els.profileNickname.value);if(await isUsernameTaken(username,state.user.id)){toast('Этот username уже занят');return}const payload={user_id:state.user.id,nickname:els.profileNickname.value.trim()||'User',username,bio:els.profileBio.value.trim(),avatar_emoji:els.profileAvatarEmoji.value.trim(),avatar_bg:els.profileAvatarBg.value||'#2a3b4a',profile_cover:els.profileCover.value.trim(),updated_at:new Date().toISOString()};const {data,error}=await supabase.from('profiles').upsert(payload).select().single();if(error)throw error;state.myProfile=data;await loadProfiles();renderSelf();fillProfileForm();await loadChats(false);if(state.activeChatId)await loadMessages(state.activeChatId,false);closeModals();toast('Профиль сохранён')}catch(e){console.error(e);toast('Ошибка сохранения профиля')}finally{state.busyProfileSave=false;els.saveProfileBtn.disabled=false}}
-
-    function setMode(mode){state.activeMode=mode;els.modeChatsBtn.classList.toggle('active',mode==='chats');els.modeChannelsBtn.classList.toggle('active',mode==='channels');els.chatList.classList.toggle('hidden',mode!=='chats');els.channelList.classList.toggle('hidden',mode!=='channels');els.channelSubscribeBtn.classList.toggle('hidden',mode!=='channels'||!state.activeChannelId);els.channelManageBtn.classList.toggle('hidden',true);els.blockUserBtn.classList.toggle('hidden',true);closeMenu();renderEmpty()}
-
-    async function loadChats(resetIfMissing=false){const {data:myMembers,error:memberErr}=await supabase.from('conversation_members').select('conversation_id').eq('user_id',state.user.id);if(memberErr)throw memberErr;const ids=[...new Set((myMembers||[]).map(x=>x.conversation_id))];if(!ids.length){state.chats=[];renderChatList();if(resetIfMissing&&state.activeMode==='chats')renderEmpty();return}const {data:conversations,error:convErr}=await supabase.from('conversations').select('*').in('id',ids).order('updated_at',{ascending:false});if(convErr)throw convErr;const {data:members,error:membersErr}=await supabase.from('conversation_members').select('*').in('conversation_id',ids);if(membersErr)throw membersErr;const membersMap={};for(const m of members||[]){if(!membersMap[m.conversation_id])membersMap[m.conversation_id]=[];membersMap[m.conversation_id].push(m)}state.chats=(conversations||[]).map(c=>({...c,members:membersMap[c.id]||[]}));renderChatList();if(state.activeChatId&&!state.chats.some(c=>c.id===state.activeChatId)&&state.activeMode==='chats')renderEmpty()}
-    const getChatTitle=chat=>chat.type==='group'?(chat.title||'Группа'):displayName(state.profilesMap.get((chat.members||[]).find(m=>m.user_id!==state.user.id)?.user_id),'Новый чат');
-    const getChatSubtitle=chat=>chat.type==='group'?`${(chat.members||[]).length} участников`:displayHandle(state.profilesMap.get((chat.members||[]).find(m=>m.user_id!==state.user.id)?.user_id));
-    const getChatProfile=chat=>chat.type==='group'?null:(state.profilesMap.get((chat.members||[]).find(m=>m.user_id!==state.user.id)?.user_id)||null);
-    function renderChatList(){const term=els.chatSearch.value.trim().toLowerCase();const list=state.chats.filter(chat=>!term||getChatTitle(chat).toLowerCase().includes(term)||getChatSubtitle(chat).toLowerCase().includes(term));if(!list.length){els.chatList.innerHTML=`<div class="empty"><div>Чатов пока нет</div></div>`;return}els.chatList.innerHTML=list.map(chat=>{const profile=getChatProfile(chat);const unread=state.unreadCounts[chat.id]||0;const avatar=chat.type==='group'?`<div class="avatar fallback">${escapeHtml((chat.title||'G').slice(0,1))}</div>`:avatarHTML(profile);const titleHtml=chat.type==='direct'?nameWithDecor(profile,getChatTitle(chat)):escapeHtml(getChatTitle(chat));return `<div class="list-item ${state.activeMode==='chats'&&state.activeChatId===chat.id?'active':''}" data-chat-id="${chat.id}">${avatar}<div style="min-width:0;"><div class="item-name">${titleHtml}</div><div class="item-sub">${escapeHtml(getChatSubtitle(chat))}</div></div><div class="item-meta"><div>${escapeHtml(formatTime(chat.updated_at))}</div>${unread?`<div class="unread-badge">${unread}</div>`:''}</div></div>`}).join('')}
-
-    async function loadChannels(){const {data,error}=await supabase.from('channels').select('*').order('created_at',{ascending:false});if(error)throw error;state.channels=data||[];const {data:subs}=await supabase.from('channel_subscriptions').select('*');state.channelSubsMap=new Map();(subs||[]).forEach(s=>{if(!state.channelSubsMap.has(s.channel_id))state.channelSubsMap.set(s.channel_id,[]);state.channelSubsMap.get(s.channel_id).push(s)});renderChannelList()}
-    function channelSubsCount(id){return (state.channelSubsMap.get(id)||[]).length}
-    function renderChannelList(){const term=els.chatSearch.value.trim().toLowerCase();const list=state.channels.filter(ch=>!term||(ch.title||'').toLowerCase().includes(term)||(ch.description||'').toLowerCase().includes(term));if(!list.length){els.channelList.innerHTML=`<div class="empty"><div>Каналов пока нет</div></div>`;return}els.channelList.innerHTML=list.map(ch=>{const avatar=avatarHTML({avatar_emoji:ch.avatar_emoji,avatar_bg:ch.avatar_bg,nickname:ch.title});return `<div class="list-item ${state.activeMode==='channels'&&state.activeChannelId===ch.id?'active':''}" data-channel-id="${ch.id}">${avatar}<div style="min-width:0;"><div class="item-name">${escapeHtml(ch.title||'Канал')}</div><div class="item-sub">${channelSubsCount(ch.id)} подписчиков</div></div><div class="item-meta"><div>${escapeHtml(formatTime(ch.created_at))}</div></div></div>`}).join('')}
-
-    async function openChat(chatId){state.activeMode='chats';setMode('chats');state.activeChatId=chatId;state.unreadCounts[chatId]=0;const chat=state.chats.find(c=>c.id===chatId);if(!chat)return;if(window.innerWidth<=980)document.body.classList.add('mobile-chat-open');const profile=getChatProfile(chat);if(chat.type==='direct'&&profile){els.activeChatAvatar.outerHTML=avatarHTML(profile);const newAvatar=els.activeProfileChip.querySelector('.avatar');newAvatar.id='activeChatAvatar';els.activeChatAvatar=newAvatar;els.activeChatTitle.innerHTML=nameWithDecor(profile,getChatTitle(chat));state.activeProfileUserId=profile.user_id;}else{els.activeChatAvatar.innerHTML=escapeHtml((chat.title||'G').slice(0,1));els.activeChatAvatar.style.background='#2a3b4a';els.activeChatTitle.textContent=getChatTitle(chat);state.activeProfileUserId=null}els.activeChatSubtitle.textContent=getChatSubtitle(chat);els.channelSubscribeBtn.classList.add('hidden');els.channelManageBtn.classList.add('hidden');await loadMessages(chatId,true);closeMenu()}
-
-    async function openChannel(channelId){state.activeMode='channels';setMode('channels');state.activeChannelId=channelId;const channel=state.channels.find(c=>c.id===channelId);if(!channel)return;if(window.innerWidth<=980)document.body.classList.add('mobile-chat-open');els.activeChatAvatar.outerHTML=avatarHTML({avatar_emoji:channel.avatar_emoji,avatar_bg:channel.avatar_bg,nickname:channel.title});const newAvatar=els.activeProfileChip.querySelector('.avatar');newAvatar.id='activeChatAvatar';els.activeChatAvatar=newAvatar;els.activeChatTitle.textContent=channel.title||'Канал';els.activeChatSubtitle.textContent=`${channelSubsCount(channel.id)} подписчиков`;state.activeProfileUserId=null;await updateChannelHeader(channelId);await loadChannelPosts(channelId,true);closeMenu()}
-
-    async function updateChannelHeader(channelId){const channel=state.channels.find(c=>c.id===channelId);const subs=state.channelSubsMap.get(channelId)||[];const me=subs.find(s=>s.user_id===state.user.id);state.activeChannelRole=me?.role||null;els.channelSubscribeBtn.classList.remove('hidden');els.channelSubscribeBtn.textContent=me?'Отписаться':'Подписаться';els.channelManageBtn.classList.toggle('hidden',state.activeChannelRole!=='owner')}
-
-    async function loadMessages(chatId,scrollToBottom=false){const token=++state.messagesLoadToken;const {data,error}=await supabase.from('messages').select('*').eq('conversation_id',chatId).order('created_at',{ascending:true});if(error)throw error;if(chatId!==state.activeChatId)return;if(token!==state.messagesLoadToken)return;state.activeMessages=data||[];renderMessages(scrollToBottom)}
-    function renderMessages(scrollToBottom=false){if(!state.activeMessages.length){els.messagesWrap.innerHTML=`<div class="empty"><div>Сообщений пока нет</div></div>`;return}els.messagesWrap.innerHTML=state.activeMessages.map(msg=>{const mine=msg.sender_id===state.user.id;const p=state.profilesMap.get(msg.sender_id);return `<div class="msg ${mine?'mine':''}"><div class="msg-head"><span>${nameWithDecor(p,'User')}</span><span>${escapeHtml(formatTime(msg.created_at))}</span></div><div class="msg-body">${escapeHtml(msg.body||'')}</div></div>`}).join('');if(scrollToBottom)els.messagesWrap.scrollTop=els.messagesWrap.scrollHeight}
-
-    async function loadChannelPosts(channelId,scrollToBottom=false){const token=++state.postsLoadToken;const {data:posts,error}=await supabase.from('channel_posts').select('*').eq('channel_id',channelId).order('created_at',{ascending:false});if(error)throw error;if(channelId!==state.activeChannelId)return;if(token!==state.postsLoadToken)return;const postIds=(posts||[]).map(p=>p.id);let reactions=[];let views=[];if(postIds.length){const r=await supabase.from('channel_reactions').select('*').in('post_id',postIds);if(!r.error)reactions=r.data||[];const v=await supabase.from('channel_post_views').select('*').in('post_id',postIds);if(!v.error)views=v.data||[];await Promise.all(postIds.map(postId=>supabase.from('channel_post_views').upsert({post_id:postId,user_id:state.user.id})));}
-      const reactionMap={};reactions.forEach(r=>{if(!reactionMap[r.post_id])reactionMap[r.post_id]={};reactionMap[r.post_id][r.reaction]=(reactionMap[r.post_id][r.reaction]||0)+1});
-      const myReacts={};reactions.filter(r=>r.user_id===state.user.id).forEach(r=>{if(!myReacts[r.post_id])myReacts[r.post_id]=new Set();myReacts[r.post_id].add(r.reaction)});
-      const viewMap={};views.forEach(v=>{viewMap[v.post_id]=(viewMap[v.post_id]||0)+1});
-      renderChannelPosts(posts||[],reactionMap,myReacts,viewMap,scrollToBottom)}
-
-    function renderChannelPosts(posts,reactionMap,myReacts,viewMap,scrollToBottom=false){if(!posts.length){els.messagesWrap.innerHTML=`<div class="empty"><div>Постов пока нет</div></div>`;return}els.messagesWrap.innerHTML=posts.map(post=>{const author=state.profilesMap.get(post.author_id);const reacts=['👍','🔥','❤️'].map(r=>{const count=(reactionMap[post.id]&&reactionMap[post.id][r])||0;const active=myReacts[post.id]&&myReacts[post.id].has(r);return `<button class="reaction-btn ${active?'active':''}" data-react-post="${post.id}" data-reaction="${r}">${r} ${count||''}</button>`}).join('');return `<div class="channel-post"><div class="channel-post-head"><div><div class="item-name">${nameWithDecor(author,'Автор')}</div><div class="tiny">${escapeHtml(formatTime(post.created_at))}</div></div></div><div class="channel-post-body">${escapeHtml(post.content||'')}</div><div class="post-stats"><span>👁 ${viewMap[post.id]||0}</span></div><div class="reactions">${reacts}</div></div>`}).join('');if(scrollToBottom)els.messagesWrap.scrollTop=0}
-
-    async function sendMessageOrPost(){if(state.busySend)return;const body=els.messageInput.value.trim();if(!body){toast('Сообщение пустое');return}state.busySend=true;els.sendBtn.disabled=true;try{if(state.activeMode==='channels'&&state.activeChannelId){if(!['owner','admin'].includes(state.activeChannelRole||'')){toast('Публиковать посты могут только владелец и назначенные админы');return}const {error}=await supabase.from('channel_posts').insert({channel_id:state.activeChannelId,author_id:state.user.id,content:body});if(error)throw error;els.messageInput.value='';await loadChannelPosts(state.activeChannelId,true)}else{if(!state.activeChatId){toast('Сначала открой чат');return}const chat=state.chats.find(c=>c.id===state.activeChatId);const other=(chat?.members||[]).find(m=>m.user_id!==state.user.id)?.user_id;if(other&&(state.blockedSet.has(other)||state.blockedBySet.has(other))){toast('Обмен сообщениями недоступен: пользователь заблокирован');return}const {error}=await supabase.from('messages').insert({conversation_id:state.activeChatId,sender_id:state.user.id,body});if(error)throw error;await supabase.from('conversations').update({updated_at:new Date().toISOString()}).eq('id',state.activeChatId);els.messageInput.value='';await loadChats(false);await loadMessages(state.activeChatId,true)}}catch(e){console.error(e);toast('Ошибка отправки')}finally{state.busySend=false;els.sendBtn.disabled=false}}
-
-    async function openNewChatModal(){await loadProfiles();renderUserList();showModal('newChatModal');closeMenu()}
-    function renderUserList(){const term=els.userSearch.value.trim().toLowerCase();const users=state.profiles.filter(p=>p.user_id!==state.user.id&&!state.blockedSet.has(p.user_id)).filter(p=>!term||displayName(p).toLowerCase().includes(term)||displayHandle(p).toLowerCase().includes(term));if(!users.length){els.userList.innerHTML=`<div class="empty"><div>Никого не найдено</div></div>`;return}els.userList.innerHTML=users.map(p=>`<div class="user-row">${avatarHTML(p)}<div><div class="item-name">${nameWithDecor(p,'User')}</div><div class="tiny">${escapeHtml(displayHandle(p))}</div></div><button class="btn btn-primary" data-start-chat="${p.user_id}">Чат</button></div>`).join('')}
-    async function startDirectChat(otherUserId){const existing=state.chats.find(c=>c.type==='direct'&&(c.members||[]).some(m=>m.user_id===otherUserId));if(existing){closeModals();await openChat(existing.id);return}const {data:convo,error:convoErr}=await supabase.from('conversations').insert({type:'direct',title:'',created_by:state.user.id,updated_at:new Date().toISOString()}).select().single();if(convoErr)throw convoErr;const {error:membersErr}=await supabase.from('conversation_members').insert([{conversation_id:convo.id,user_id:state.user.id,role:'owner'},{conversation_id:convo.id,user_id:otherUserId,role:'member'}]);if(membersErr)throw membersErr;closeModals();await loadChats(false);await openChat(convo.id);toast('Чат создан')}
-
-    async function openNewChannelModal(){showModal('newChannelModal');closeMenu()}
-    async function createChannel(){const title=els.channelTitleInput.value.trim()||'Новый канал';const description=els.channelDescriptionInput.value.trim();const slug=normalizeUsername(title);const avatar_emoji=els.channelEmojiInput.value.trim();const avatar_bg=els.channelBgInput.value||'#2a3b4a';const {data:channel,error}=await supabase.from('channels').insert({title,description,slug,owner_id:state.user.id,avatar_emoji,avatar_bg}).select().single();if(error){console.error(error);toast('Не удалось создать канал');return}await supabase.from('channel_subscriptions').insert({channel_id:channel.id,user_id:state.user.id,role:'owner'});els.channelTitleInput.value='';els.channelDescriptionInput.value='';els.channelEmojiInput.value='';els.channelBgInput.value='#2a3b4a';closeModals();await loadChannels();await openChannel(channel.id);toast('Канал создан')}
-    async function toggleChannelSubscription(){if(!state.activeChannelId)return;const subs=state.channelSubsMap.get(state.activeChannelId)||[];const me=subs.find(s=>s.user_id===state.user.id);if(me){await supabase.from('channel_subscriptions').delete().eq('channel_id',state.activeChannelId).eq('user_id',state.user.id);toast('Отписка выполнена')}else{await supabase.from('channel_subscriptions').insert({channel_id:state.activeChannelId,user_id:state.user.id,role:'member'});toast('Подписка оформлена')}await loadChannels();await updateChannelHeader(state.activeChannelId)}
-    async function openChannelManage(){if(state.activeChannelRole!=='owner'||!state.activeChannelId)return;const subs=state.channelSubsMap.get(state.activeChannelId)||[];els.channelMembersList.innerHTML=subs.map(s=>{const p=state.profilesMap.get(s.user_id);return `<div class="user-row">${avatarHTML(p)}<div><div class="item-name">${nameWithDecor(p,'User')}</div><div class="tiny">${escapeHtml(displayHandle(p))} · ${escapeHtml(s.role||'member')}</div></div>${s.user_id===state.user.id?'<span class="tiny">owner</span>':`<button class="btn btn-secondary" data-toggle-admin="${s.user_id}">${s.role==='admin'?'Снять админа':'Сделать админом'}</button>`}</div>`}).join('');showModal('channelManageModal')}
-    async function toggleAdmin(userId){if(state.activeChannelRole!=='owner'||!state.activeChannelId)return;const subs=state.channelSubsMap.get(state.activeChannelId)||[];const sub=subs.find(s=>s.user_id===userId);if(!sub)return;const nextRole=sub.role==='admin'?'member':'admin';await supabase.from('channel_subscriptions').update({role:nextRole}).eq('channel_id',state.activeChannelId).eq('user_id',userId);await loadChannels();await updateChannelHeader(state.activeChannelId);await openChannelManage();toast('Роль обновлена')}
-    async function reactToPost(postId,reaction){const {data,error}=await supabase.from('channel_reactions').select('*').eq('post_id',postId).eq('user_id',state.user.id).eq('reaction',reaction).maybeSingle();if(error)return;if(data){await supabase.from('channel_reactions').delete().eq('post_id',postId).eq('user_id',state.user.id).eq('reaction',reaction)}else{await supabase.from('channel_reactions').upsert({post_id:postId,user_id:state.user.id,reaction})}if(state.activeChannelId)await loadChannelPosts(state.activeChannelId,false)}
-    async function toggleBlockUser(){if(!state.activeProfileUserId)return;const target=state.activeProfileUserId;if(state.blockedSet.has(target)){await supabase.from('blocked_users').delete().eq('blocker_id',state.user.id).eq('blocked_user_id',target);toast('Пользователь разблокирован')}else{await supabase.from('blocked_users').upsert({blocker_id:state.user.id,blocked_user_id:target});toast('Пользователь заблокирован')}await loadBlocks();if(state.activeChatId){await loadChats(false);await loadMessages(state.activeChatId,false)}const profile=state.profilesMap.get(target);if(profile)openProfileView(target)}
-
-    async function checkForNewMessages(){if(state.activeMode!=='chats')return;try{if(!state.user||!state.chats.length)return;const ids=state.chats.map(c=>c.id);if(!ids.length)return;const since=state.lastMessageSeenAt||new Date().toISOString();const {data,error}=await supabase.from('messages').select('*').in('conversation_id',ids).gt('created_at',since).order('created_at',{ascending:true});if(error)throw error;if(data&&data.length){for(const msg of data){if(msg.sender_id===state.user.id)continue;if(msg.conversation_id!==state.activeChatId){state.unreadCounts[msg.conversation_id]=(state.unreadCounts[msg.conversation_id]||0)+1;const chat=state.chats.find(c=>c.id===msg.conversation_id);toast(`Новое сообщение: ${chat?getChatTitle(chat):'Messenger'}`)}}state.lastMessageSeenAt=data[data.length-1].created_at;renderChatList()}}catch(e){console.error(e)}}
-
-    function openProfileView(userId){const p=state.profilesMap.get(userId);if(!p)return;const warning=PREFIX_BY_USERNAME[p.username?.toLowerCase?.()]?.notice;const blocked=state.blockedSet.has(userId);const createdChannel=state.channels.find(c=>c.owner_id===userId)||null;const subsCount=createdChannel?(state.channelSubsMap.get(createdChannel.id)||[]).length:0;const gifts=(userId===state.user.id?state.wallet.ownedGifts.map(id=>SHOP_GIFTS.find(x=>x.id===id)).filter(Boolean):[]); if(!gifts.length && userId===state.user.id && state.wallet.activeGift){ const activeGift=SHOP_GIFTS.find(x=>x.id===state.wallet.activeGift); if(activeGift) gifts.push(activeGift); }const giftNodes=(gifts.length?gifts.slice(0,6):[]).map((g,i)=>`<div class="floating-gift g${i+1}">${escapeHtml(g.emoji)}</div>`).join('');els.viewProfileContent.innerHTML=`<div class="profile-public"><div class="profile-hero" style="${coverStyle(p)}"><button class="profile-back-btn" data-close="viewProfileModal">‹</button><div class="profile-hero-inner"><div><div class="profile-avatar-stage"><div class="profile-avatar-center">${avatarHTML(p,'big')}</div>${giftNodes}</div><div class="profile-public-name">${nameWithDecor(p,'User')}</div><div class="profile-public-status">${escapeHtml(displayHandle(p))}</div>${warning?`<div style="margin:16px auto 0;max-width:760px;padding:12px 14px;border-radius:14px;border:1px solid #ff6a6a;background:rgba(255,0,0,.08);color:#ffb0b0;line-height:1.55;">${escapeHtml(warning)}</div>`:''}</div></div></div><div class="profile-public-grid"><div class="profile-public-card"><div style="font-size:15px;color:#cfd3d8;font-weight:800;margin-bottom:10px;">username</div><div class="username-box"><div style="font-size:22px;color:#3557ff;font-weight:900;">${escapeHtml(displayHandle(p))}</div>${p.bio?`<div class="tiny" style="margin-top:8px;white-space:pre-wrap;line-height:1.6;">${escapeHtml(p.bio)}</div>`:''}</div></div>${createdChannel?`<div><div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;"><div class="tiny" style="font-size:14px;text-transform:uppercase;">Channel</div><div class="tiny">${subsCount.toLocaleString('ru-RU')} subscribers</div></div><div class="channel-preview-card">${avatarHTML(p)}<div><div class="item-name">${escapeHtml(createdChannel.title||'Канал')}</div><div class="tiny">${escapeHtml(createdChannel.description||'Канал владельца профиля')}</div></div><div class="tiny">›</div></div></div>`:''}${userId===state.user.id?`<div class="profile-public-card"><div style="font-size:15px;color:#cfd3d8;font-weight:800;margin-bottom:12px;">NFT подарки</div><div style="display:flex;flex-wrap:wrap;gap:10px;">${gifts.length?gifts.map(g=>`<span class=\"wallet-badge\">${escapeHtml(g.emoji)} ${escapeHtml(g.title)}</span>`).join(''):'<span class=\"tiny\">NFT подарков пока нет</span>'}</div></div>`:''}${userId!==state.user.id?`<div style="margin-top:4px;"><button id="profileBlockBtn" class="btn btn-danger">${blocked?'Разблокировать':'Блокировать'}</button></div>`:''}</div></div>`;showModal('viewProfileModal');const btn=document.getElementById('profileBlockBtn');if(btn)btn.addEventListener('click',toggleBlockUser);document.querySelectorAll('#viewProfileModal [data-close="viewProfileModal"]').forEach(x=>x.addEventListener('click',closeModals));closeMenu()}
-
-
-    function renderWalletUi(){
-      els.walletBalanceValue.textContent = Math.floor(state.wallet.balance);
-      els.walletBalanceBadge.textContent = Math.floor(state.wallet.balance);
-      els.walletOwnedBgCount.textContent = `${state.wallet.ownedBackgrounds.length} шт.`;
-      els.walletOwnedGiftCount.textContent = `${state.wallet.ownedGifts.length} шт.`;
-      els.walletBackgrounds.innerHTML = SHOP_BACKGROUNDS.map(item=>{
-        const owned = state.wallet.ownedBackgrounds.includes(item.id);
-        const active = state.wallet.activeBackground===item.id;
-        return `<div class="wallet-card"><div class="wallet-preview" style="background:${escapeHtml(item.css)}"></div><div class="item-name">${escapeHtml(item.title)}</div><div class="wallet-price">${item.price} ₽</div>${owned?`<div class="wallet-owned">${active?'Активен':'Уже куплен'}</div>`:''}<button class="btn ${owned?'btn-secondary':'btn-primary'}" data-buy-bg="${item.id}">${owned?(active?'Используется':'Применить'):'Купить'}</button></div>`;
-      }).join('');
-      els.walletGifts.innerHTML = SHOP_GIFTS.map(item=>{
-        const owned = state.wallet.ownedGifts.includes(item.id);
-        return `<div class="wallet-card"><div class="wallet-preview">${escapeHtml(item.emoji)}</div><div class="item-name">${escapeHtml(item.title)}</div><div class="wallet-price">${item.price} ₽</div>${owned?`<div class="wallet-owned">Уже куплен</div>`:''}<button class="btn ${owned?'btn-secondary':'btn-primary'}" data-buy-gift="${item.id}">${owned?'Применить':'Купить'}</button></div>`;
-      }).join('');
-    }
-    function applyWalletAppearance(){
-      const bg = SHOP_BACKGROUNDS.find(x=>x.id===state.wallet.activeBackground);
-      if(bg && state.myProfile){ state.myProfile.profile_cover = bg.css; }
-      const gift = SHOP_GIFTS.find(x=>x.id===state.wallet.activeGift);
-      if(gift && state.myProfile){ state.myProfile.avatar_emoji = gift.emoji; state.myProfile.avatar_bg = gift.bg; }
-    }
-    function openWallet(){ renderWalletUi(); showModal('walletModal'); closeMenu(); }
-    function openNftShop(){ renderWalletUi(); showModal('nftShopModal'); closeMenu(); }
-    function buyBackgroundLocal(id){
-      const item = SHOP_BACKGROUNDS.find(x=>x.id===id); if(!item) return;
-      if(!state.wallet.ownedBackgrounds.includes(id)){
-        if(state.wallet.balance < item.price){ toast('Недостаточно средств'); return; }
-        state.wallet.balance -= item.price;
-        state.wallet.ownedBackgrounds.push(id);
+  <script>
+    const ui = {
+      ru: {
+        search: "Поиск",
+        suggestions: "Результаты поиска",
+        results: "Результаты поиска",
+        found: "Найдено",
+        open: "Открыть",
+        getCode: "Получить код",
+        close: "Закрыть",
+        codeLabel: "Код для лаунчера",
+        codeNote: "Используйте этот код в физическом лаунчере.",
+        empty: "Ничего не найдено. Попробуй другой запрос.",
+        topRated: "Топ игры по оценкам",
+        rating: "Оценка",
+        votes: "оценок",
+        publisher: "Издатель",
+        developer: "Разработчик",
+        followers: "подписчиков",
+        gamesTitle: "Игры",
+        closeProfile: "Закрыть профиль"
+      },
+      zh: {
+        search: "搜索",
+        suggestions: "搜索结果",
+        results: "搜索结果",
+        found: "找到",
+        open: "打开",
+        getCode: "获取代码",
+        close: "关闭",
+        codeLabel: "启动器代码",
+        codeNote: "请在实体启动器中使用此代码。",
+        empty: "未找到内容。请尝试其他搜索词。",
+        topRated: "评分最高游戏",
+        rating: "评分",
+        votes: "条评分",
+        publisher: "发行商",
+        developer: "开发者",
+        followers: "位关注者",
+        gamesTitle: "游戏",
+        closeProfile: "关闭资料"
+      },
+      en: {
+        search: "Search",
+        suggestions: "Search results",
+        results: "Search results",
+        found: "Found",
+        open: "Open",
+        getCode: "Get code",
+        close: "Close",
+        codeLabel: "Launcher code",
+        codeNote: "Use this code in the physical launcher.",
+        empty: "Nothing found. Try another search.",
+        topRated: "Top rated game",
+        rating: "Rating",
+        votes: "ratings",
+        publisher: "Publisher",
+        developer: "Developer",
+        followers: "followers",
+        gamesTitle: "Games",
+        closeProfile: "Close profile"
       }
-      state.wallet.activeBackground = id;
-      saveWallet();
-      applyWalletAppearance();
-      renderSelf();
-      renderWalletUi();
-      toast(`Фон ${item.title} применён`);
-    }
-    function buyGiftLocal(id){
-      const item = SHOP_GIFTS.find(x=>x.id===id); if(!item) return;
-      if(!state.wallet.ownedGifts.includes(id)){
-        if(state.wallet.balance < item.price){ toast('Недостаточно средств'); return; }
-        state.wallet.balance -= item.price;
-        state.wallet.ownedGifts.push(id);
+    };
+
+    let currentLang = "ru";
+
+    const profiles = {
+      dexxure: {
+        id: "dexxure",
+        initials: "DX",
+        followers: 100,
+        name: {
+          ru: "Dexxure Games",
+          en: "Dexxure Games",
+          zh: "Dexxure Games"
+        }
       }
-      state.wallet.activeGift = id;
-      saveWallet();
-      applyWalletAppearance();
-      renderSelf();
-      renderWalletUi();
-      toast(`Подарок ${item.title} применён`);
+    };
+
+    const games = [
+      {
+        id: "mishani",
+        title: {
+          ru: "Побег от Мишани Литвина",
+          en: "Escape from Mishani Litvin",
+          zh: "逃离米沙尼·利特文"
+        },
+        genre: {
+          ru: "Survival / Horror",
+          en: "Survival / Horror",
+          zh: "生存 / 恐怖"
+        },
+        description: {
+          ru: "Вы гуляли с друзьями, пили энергетик и смотрели TikTok. Внезапно в ленте начали появляться только видео с Литвином. Допив напиток, вы огляделись, но друзей рядом не было, а потом очнулись в подвале дома Литвина. Главная задача — выбраться и не попасться ему на глаза. Проект находится в разработке, а по атмосфере это одиночный survival horror от первого лица.",
+          en: "You were hanging out with friends, drinking an energy drink and watching TikTok. Suddenly your feed started showing only Litvin videos. After finishing the drink, you looked around and your friends were gone, and then you woke up in Litvin's basement. Your main goal is to escape without being seen. The project is still in development and is designed as a single-player first-person survival horror.",
+          zh: "你和朋友们在外面闲逛，喝着能量饮料，看着 TikTok。突然，你的推荐里只剩下利特文的视频。喝完后你环顾四周，却发现朋友们都不见了，接着你在利特文家的地下室醒来。你的主要任务是逃出去，并且不要被他发现。该项目仍在开发中，整体氛围是一款第一人称单人生存恐怖游戏。"
+        },
+        code: "MISHANI-2026-DXG-PLAY",
+        initials: "ML",
+        featuredImage: "https://i.ibb.co/gbwhjPKQ/IMG-2110.png",
+        screenshots: [
+          "https://i.ibb.co/W4tgnr7W/c1A-o0.png",
+          "https://i.ibb.co/99jP2BBK/b-XSv0o.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "ozon",
+        title: {
+          ru: "Ozon Simulator (Demo)",
+          en: "Ozon Simulator (Demo)",
+          zh: "Ozon 模拟器（演示版）"
+        },
+        genre: {
+          ru: "Simulation",
+          en: "Simulation",
+          zh: "模拟"
+        },
+        description: {
+          ru: "Демо-игра для Windows, в которой предлагается почувствовать себя работником Ozon. Проект сделан в формате простого симулятора с видом от первого лица. По самой странице это ранняя демо-версия, скорее как эксперимент или заготовка под более крупную идею.",
+          en: "A demo game for Windows where you can experience life as an Ozon worker. The project is made as a simple first-person simulator. According to its page, this is an early demo version, more like an experiment or a prototype for a bigger idea.",
+          zh: "这是一款适用于 Windows 的演示游戏，让你体验成为 Ozon 员工的感觉。项目采用简单的第一人称模拟玩法。根据页面信息，这还是一个早期演示版本，更像是一次实验或更大创意的原型。"
+        },
+        code: "OZON-2026-DXG-DEMO",
+        initials: "OZ",
+        featuredImage: "https://i.ibb.co/qLmKptvD/Jd0Ajq.png",
+        screenshots: [
+          "https://i.ibb.co/qLmKptvD/Jd0Ajq.png",
+          "https://i.ibb.co/JWL98Y7k/ie8Mrm.png",
+          "https://i.ibb.co/QFM8tCYH/EEyzgc.png",
+          "https://i.ibb.co/Cstrgs4X/BDf-F1.png",
+          "https://i.ibb.co/s9fX5szR/d7Soe1.png"
+        ],
+        rating: 4.5,
+        ratingCount: 13,
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "shadow",
+        title: {
+          ru: "The Shadow of the Ruined",
+          en: "The Shadow of the Ruined",
+          zh: "废墟之影"
+        },
+        genre: {
+          ru: "Action / Puzzle / Shooter",
+          en: "Action / Puzzle / Shooter",
+          zh: "动作 / 解谜 / 射击"
+        },
+        description: {
+          ru: "События игры разворачиваются в альтернативном мире на территории Боркинса, в Чернобыльской зоне отчуждения. Это проект для Windows с упором на мрачную атмосферу, исследование, стрельбу и элементы головоломок. Игра находится в разработке и выглядит как сюжетный одиночный хоррор-экшен.",
+          en: "The events of the game take place in an alternate world on the territory of Borkins, inside the Chernobyl exclusion zone. It is a Windows project focused on dark atmosphere, exploration, shooting, and puzzle elements. The game is in development and looks like a story-driven single-player horror action title.",
+          zh: "游戏故事发生在一个架空世界中的博尔金斯地区，地点位于切尔诺贝利隔离区。该项目面向 Windows 平台，重点是阴暗氛围、探索、射击以及解谜元素。游戏目前仍在开发中，看起来像一款带有剧情的单人恐怖动作游戏。"
+        },
+        code: "SHADOW-2026-DXG-RUIN",
+        initials: "SR",
+        featuredImage: "https://i.ibb.co/bMhSPMb0/2LVgn2.png",
+        screenshots: [
+          "https://i.ibb.co/bMhSPMb0/2LVgn2.png",
+          "https://i.ibb.co/67MjGB9k/XQf-Q0P.png",
+          "https://i.ibb.co/Xfddz4m8/z-A8ec-S.png",
+          "https://i.ibb.co/TDqhcKvW/Q2k-BVn.png",
+          "https://i.ibb.co/HpNHSB1S/Xt-jcp.png",
+          "https://i.ibb.co/7JyjjXq3/u-MGj-OQ.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "toilet",
+        title: {
+          ru: "Симулятор Сидения на туалете",
+          en: "Toilet Sitting Simulator",
+          zh: "坐厕所模拟器"
+        },
+        genre: {
+          ru: "Action / Role Playing",
+          en: "Action / Role Playing",
+          zh: "动作 / 角色扮演"
+        },
+        description: {
+          ru: "Необычный и шуточный проект от REXAR GAMES. На странице у игры указаны жанры Action и Role Playing, а также поддержка русского языка. По оформлению это скорее юмористическая игра-эксперимент с простым 3D-геймплеем и нестандартной идеей.",
+          en: "An unusual and humorous project from REXAR GAMES. The game's page lists Action and Role Playing genres and also mentions Russian language support. Judging by its presentation, it is more of a comedic experimental game with simple 3D gameplay and an unusual concept.",
+          zh: "这是一款来自 REXAR GAMES 的独特搞笑项目。游戏页面标注了动作和角色扮演类型，并支持俄语。根据整体表现来看，它更像是一款带有简单 3D 玩法和奇特创意的幽默实验作品。"
+        },
+        code: "TOILET-2026-DXG-SIT",
+        initials: "СТ",
+        featuredImage: "https://i.ibb.co/zTg0VrKJ/3V2z-Zg.jpg",
+        screenshots: [
+          "https://i.ibb.co/zTg0VrKJ/3V2z-Zg.jpg",
+          "https://i.ibb.co/tggR2pc/bx4z6m.jpg",
+          "https://i.ibb.co/vvm4hzg3/6YLyzj.jpg",
+          "https://i.ibb.co/JjrGNkTb/sg6XGY.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "skuf",
+        title: {
+          ru: "Побег от Скуфа",
+          en: "Escape from Skuf",
+          zh: "逃离斯库夫"
+        },
+        genre: {
+          ru: "Simulation / Puzzle",
+          en: "Simulation / Puzzle",
+          zh: "模拟 / 解谜"
+        },
+        description: {
+          ru: "Игра для Windows со статусом Prototype. По тегам и подаче это проект с элементами хоррора, скрытности и побега. Основной акцент сделан на напряжённой атмосфере, перемещении по локации и попытке выбраться, не попавшись.",
+          en: "A Windows game with Prototype status. Based on its tags and presentation, this is a project with horror, stealth, and escape elements. The main focus is on tense atmosphere, moving through the location, and trying to escape without getting caught.",
+          zh: "这是一款适用于 Windows 的原型游戏。根据标签和整体表现来看，它包含恐怖、潜行和逃脱元素。核心重点在于紧张氛围、场景移动，以及在不被发现的情况下成功逃离。"
+        },
+        code: "SKUF-2026-DXG-ESC",
+        initials: "СК",
+        featuredImage: "https://i.ibb.co/w31PGpv/i-WVO7C.png",
+        screenshots: [
+          "https://i.ibb.co/w31PGpv/i-WVO7C.png",
+          "https://i.ibb.co/JwCDHTFW/2n9O9F.png",
+          "https://i.ibb.co/CpNJ0jMX/c-Snw0V.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "fear",
+        title: {
+          ru: "Fear mansion: escape",
+          en: "Fear mansion: escape",
+          zh: "恐惧宅邸：逃脱"
+        },
+        genre: {
+          ru: "Horror",
+          en: "Horror",
+          zh: "恐怖"
+        },
+        description: {
+          ru: "Хоррор-проект с упором на побег и тревожную атмосферу. Сейчас по нему мало открытой информации, поэтому описание лучше держать нейтральным: это мрачная игра в жанре horror, связанная с исследованием и попыткой выбраться из опасного места.",
+          en: "A horror project focused on escape and tense atmosphere. There is currently little open information about it, so the description stays neutral: it is a dark horror game connected with exploration and an attempt to escape from a dangerous place.",
+          zh: "这是一款以逃脱和压迫氛围为重点的恐怖项目。目前公开信息较少，因此描述保持中性：这是一款阴暗的恐怖游戏，围绕探索和试图逃离危险地点展开。"
+        },
+        code: "FEAR-2026-DXG-MANSION",
+        initials: "FM",
+        featuredImage: "https://i.ibb.co/LdryD5fy/Hc8IUd.jpg",
+        screenshots: [
+          "https://i.ibb.co/LdryD5fy/Hc8IUd.jpg",
+          "https://i.ibb.co/mFRCkQsB/Dh09a-Y.png",
+          "https://i.ibb.co/rKCTRWjd/R1g-Mp-I.png",
+          "https://i.ibb.co/LDKpzwLz/g-Ht-DKZ.png",
+          "https://i.ibb.co/chQhsnS8/NS-F3z.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "neighbor",
+        title: {
+          ru: "Hello Neighbor(Alpha2.7)",
+          en: "Hello Neighbor (Alpha 2.7)",
+          zh: "你好邻居（Alpha 2.7）"
+        },
+        genre: {
+          ru: "Stealth Horror",
+          en: "Stealth Horror",
+          zh: "潜行恐怖"
+        },
+        description: {
+          ru: "Проект в стиле скрытного хоррора, вдохновлённый Hello Neighbor. По подаче это альфа-версия с акцентом на скрытность, наблюдение за противником и осторожное исследование окружения. В магазине игру можно показывать как завершённый экспериментальный проект.",
+          en: "A stealth horror project inspired by Hello Neighbor. In presentation, this is an alpha version focused on stealth, watching the enemy, and careful exploration of the environment. In the store, it can be shown as a completed experimental project.",
+          zh: "这是一款受《你好邻居》启发的潜行恐怖项目。从表现形式来看，这是一个 Alpha 版本，重点在于潜行、观察敌人以及谨慎探索环境。在商店中，它可以作为一个已完成的实验性项目展示。"
+        },
+        code: "HN-2026-DXG-ALPHA",
+        initials: "HN",
+        featuredImage: "https://i.ibb.co/XZh8DtQG/Ww4MIt.png",
+        screenshots: [
+          "https://i.ibb.co/XZh8DtQG/Ww4MIt.png",
+          "https://i.ibb.co/RpwRF3fx/b-Q9qzv.png",
+          "https://i.ibb.co/qYSDndqj/rm5GOV.png",
+          "https://i.ibb.co/7Jx3QQyS/3Hm-3V.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "youarealone",
+        title: {
+          ru: "You Are Alone",
+          en: "You Are Alone",
+          zh: "你独自一人"
+        },
+        genre: {
+          ru: "Horror / Survival",
+          en: "Horror / Survival",
+          zh: "恐怖 / 生存"
+        },
+        description: {
+          ru: "ВЫ приехали к старому развалистому дому за альбомом, в котором 10 млн рублей, но не все так просто, ведь дом хранит в себе много тайн, и дедушка не даст тебе просто так взять этот альбом с деньгами.\n\nХодить — WASD\nВключить и выключить фонарик — LeftMouse\nВзаимодействие — клавиша E",
+          en: "You arrived at an old ruined house to get an album containing 10 million rubles, but it is not that simple. The house hides many secrets, and the grandfather will not let you take the album with money so easily.\n\nMove — WASD\nFlashlight on/off — LeftMouse\nInteract — E key",
+          zh: "你来到一座破旧的老房子，想拿到一本装有一千万卢布的相册，但事情并没有那么简单。房子里藏着许多秘密，爷爷也不会轻易让你把装着钱的相册带走。\n\n移动 — WASD\n开关手电筒 — LeftMouse\n互动 — E 键"
+        },
+        code: "ALONE-2026-DXG-HOUSE",
+        initials: "YA",
+        featuredImage: "https://i.ibb.co/KxrkMQmQ/Sfk-Rbj.png",
+        screenshots: [
+          "https://i.ibb.co/KxrkMQmQ/Sfk-Rbj.png",
+          "https://i.ibb.co/pjYqvmgC/6djt-P4.png",
+          "https://i.ibb.co/RTYNrw0q/omf-Wv.png",
+          "https://i.ibb.co/mF2nRXCg/G5g-Tjq.png",
+          "https://i.ibb.co/3yvsJC3P/Pyl6oo.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "goresmod",
+        title: {
+          ru: "Gore's Mod",
+          en: "Gore's Mod",
+          zh: "戈尔模组"
+        },
+        genre: {
+          ru: "Physics Sandbox",
+          en: "Physics Sandbox",
+          zh: "物理沙盒"
+        },
+        description: {
+          ru: "Gore's Mod — физическая песочница. В отличие от обычных игр, здесь не существует каких-либо определённых целей или задач. Мы даём вам инструменты и оставляем вас играть.\n\nВы создаёте объекты и соединяете их вместе для создания ваших собственных конструкций — машина ли это, ракета, катапульта или нечто пока без названия — это зависит от вас.\n\nЕсли с конструированием у вас не слишком замечательно — не расстраивайтесь! Вы можете разместить множество персонажей в глупых позах.",
+          en: "Gore's Mod is a physics sandbox. Unlike ordinary games, there are no predefined goals or objectives here. We give you the tools and let you play.\n\nYou create objects and connect them together to build your own contraptions — whether it's a car, a rocket, a catapult, or something that does not even have a name yet — that is up to you.\n\nIf building is not really your strong side, do not worry! You can place lots of characters in silly poses.",
+          zh: "Gore's Mod 是一个物理沙盒。与普通游戏不同，这里没有任何固定目标或任务。我们把工具交给你，然后让你自由玩耍。\n\n你可以创建物体并把它们连接在一起，搭建属于你自己的装置——无论是汽车、火箭、投石机，还是某种暂时还没有名字的奇怪东西——一切都由你决定。\n\n如果你不太擅长建造，也别担心！你可以摆放大量角色，让他们做出各种搞笑姿势。"
+        },
+        code: "GORESMOD-2026-DXG-SANDBOX",
+        initials: "GM",
+        featuredImage: "https://i.ibb.co/S4FrPqS2/2026-04-19-160708.png",
+        screenshots: [
+          "https://i.ibb.co/S4FrPqS2/2026-04-19-160708.png",
+          "https://i.ibb.co/0V9hpg3m/2026-04-19-160834.png",
+          "https://i.ibb.co/cc4xmqMn/2026-04-19-160904.png",
+          "https://i.ibb.co/N27wsFsd/2026-04-19-161022.png",
+          "https://i.ibb.co/VpQhmcd0/2026-04-19-161027.png",
+          "https://i.ibb.co/LX4045xm/2026-04-19-161032.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      },
+      {
+        id: "spoonwall",
+        title: {
+          ru: "Копать стену ложкой",
+          en: "Digging a Wall with a Spoon",
+          zh: "用勺子挖墙"
+        },
+        genre: {
+          ru: "Simulation / Experimental",
+          en: "Simulation / Experimental",
+          zh: "模拟 / 实验"
+        },
+        description: {
+          ru: "Симулятор медленного разрушения материи с помощью бытового прибора. Игра исследует границы человеческого упорства в условиях абсолютной материальной устойчивости.\n\nИгроку предстоит вступить в диалог со стеной, используя единственный доступный инструмент — ложку. Каждый удар является актом экзистенциального сопротивления, а каждый отколотый фрагмент материи — шагом к пониманию бессмысленности и величия процесса.\n\nУлучшайте ложку, исследуйте структуру стены и приближайтесь к великой цели, смысл которой никто не может объяснить.",
+          en: "A simulator of slow matter destruction using a household tool. The game explores the limits of human persistence under conditions of absolute material resistance.\n\nThe player must enter into a dialogue with the wall using the only available instrument — a spoon. Every hit is an act of existential resistance, and every chipped fragment of matter is a step toward understanding the absurdity and grandeur of the process.\n\nUpgrade your spoon, study the structure of the wall, and move closer to a great goal whose meaning no one can explain.",
+          zh: "这是一款使用家用工具缓慢破坏物质的模拟器。游戏探索了在人类面对绝对物质稳定性时，坚持与执念的边界。\n\n玩家将只用一个工具——勺子，与墙展开一场对话。每一次敲击都是一种存在主义式的反抗，而每一块被敲落的物质碎片，都是通往理解这一过程荒诞与伟大的一步。\n\n升级你的勺子，研究墙体结构，并逐渐接近那个无人能够解释其意义的伟大目标。"
+        },
+        code: "SPOONWALL-2026-DXG-DIG",
+        initials: "SW",
+        featuredImage: "https://i.ibb.co/0jTYmt4g/2026-04-19-200705.png",
+        screenshots: [
+          "https://i.ibb.co/0jTYmt4g/2026-04-19-200705.png",
+          "https://i.ibb.co/ZznbQyj2/2026-04-19-200454.png",
+          "https://i.ibb.co/n81W9MLN/2026-04-19-200303.png"
+        ],
+        publisherId: "dexxure",
+        developerId: "dexxure"
+      }
+    ];
+
+    const featuredId = "mishani";
+    const sideIds = ["ozon", "shadow"];
+    const bottomIds = ["toilet", "skuf", "fear", "neighbor", "youarealone", "goresmod", "spoonwall"];
+    const topRatedGameId = "ozon";
+
+    const searchInput = document.getElementById("searchInput");
+    const suggestionsBox = document.getElementById("suggestionsBox");
+    const suggestionsList = document.getElementById("suggestionsList");
+    const suggestionsTitle = document.getElementById("suggestionsTitle");
+    const leftColumn = document.getElementById("leftColumn");
+    const rightColumn = document.getElementById("rightColumn");
+    const bottomRow = document.getElementById("bottomRow");
+    const emptyState = document.getElementById("emptyState");
+    const catalogView = document.getElementById("catalogView");
+    const resultsView = document.getElementById("resultsView");
+    const resultsList = document.getElementById("resultsList");
+    const resultsCount = document.getElementById("resultsCount");
+    const resultsTitle = document.getElementById("resultsTitle");
+
+    const topRatedSection = document.getElementById("topRatedSection");
+    const topRatedCard = document.getElementById("topRatedCard");
+    const topRatedBg = document.getElementById("topRatedBg");
+    const topRatedKicker = document.getElementById("topRatedKicker");
+    const topRatedName = document.getElementById("topRatedName");
+    const topRatedGenre = document.getElementById("topRatedGenre");
+    const topRatedScore = document.getElementById("topRatedScore");
+    const topRatedCount = document.getElementById("topRatedCount");
+
+    const modal = document.getElementById("gameModal");
+    const modalBanner = document.getElementById("modalBanner");
+    const modalGenre = document.getElementById("modalGenre");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalWarning = document.getElementById("modalWarning");
+    const modalPublisherBtn = document.getElementById("modalPublisherBtn");
+    const modalDeveloperBtn = document.getElementById("modalDeveloperBtn");
+    const publisherLabel = document.getElementById("publisherLabel");
+    const developerLabel = document.getElementById("developerLabel");
+    const modalScreens = document.getElementById("modalScreens");
+    const modalCode = document.getElementById("modalCode");
+    const codeBox = document.getElementById("codeBox");
+    const getCodeBtn = document.getElementById("getCodeBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const codeLabel = document.getElementById("codeLabel");
+    const codeNote = document.getElementById("codeNote");
+
+    const profileModal = document.getElementById("profileModal");
+    const profileCover = document.getElementById("profileCover");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileName = document.getElementById("profileName");
+    const profileFollowers = document.getElementById("profileFollowers");
+    const profileGamesTitle = document.getElementById("profileGamesTitle");
+    const profileGamesGrid = document.getElementById("profileGamesGrid");
+    const closeProfileBtn = document.getElementById("closeProfileBtn");
+
+    const langToggle = document.getElementById("langToggle");
+    const langMenu = document.getElementById("langMenu");
+
+    let currentCode = "";
+
+    function tGame(obj) {
+      if (typeof obj === "string") return obj;
+      return obj[currentLang] || obj.ru || obj.en || "";
     }
 
-    function bindStaticEvents(){els.registerTab.addEventListener('click',()=>setAuthTab('register'));els.loginTab.addEventListener('click',()=>setAuthTab('login'));els.registerBtn.addEventListener('click',registerUser);els.loginBtn.addEventListener('click',loginUser);els.chatSearch.addEventListener('input',()=>{state.activeMode==='chats'?renderChatList():renderChannelList()});els.newActionBtn.addEventListener('click',()=>state.activeMode==='chats'?openNewChatModal():openNewChannelModal());els.menuBtn.addEventListener('click',openMenu);els.menuOverlay.addEventListener('click',closeMenu);els.menuProfile.addEventListener('click',()=>{fillProfileForm();showModal('profileModal');closeMenu()});els.menuWallet.addEventListener('click',openWallet);els.menuShop.addEventListener('click',openNftShop);els.menuNewChat.addEventListener('click',openNewChatModal);els.menuNewChannel.addEventListener('click',openNewChannelModal);els.menuLogout.addEventListener('click',logoutUser);els.modeChatsBtn.addEventListener('click',()=>setMode('chats'));els.modeChannelsBtn.addEventListener('click',()=>setMode('channels'));els.activeProfileChip.addEventListener('click',()=>{if(state.activeProfileUserId)openProfileView(state.activeProfileUserId)});els.mobileBackBtn.addEventListener('click',e=>{e.stopPropagation();document.body.classList.remove('mobile-chat-open');state.activeChatId=null;state.activeChannelId=null;renderEmpty()});els.channelSubscribeBtn.addEventListener('click',toggleChannelSubscription);els.channelManageBtn.addEventListener('click',openChannelManage);els.messageInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessageOrPost()}});els.sendBtn.addEventListener('click',sendMessageOrPost);els.userSearch.addEventListener('input',renderUserList);els.createChannelBtn.addEventListener('click',createChannel);els.saveProfileBtn.addEventListener('click',saveProfile);els.walletOpenProfile.addEventListener('click',()=>{closeModals();fillProfileForm();showModal('profileModal')});els.walletOpenShop.addEventListener('click',()=>{closeModals();openNftShop()});document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',closeModals));document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals()}));els.chatList.addEventListener('click',async e=>{const item=e.target.closest('[data-chat-id]');if(!item)return;await openChat(item.dataset.chatId)});els.channelList.addEventListener('click',async e=>{const item=e.target.closest('[data-channel-id]');if(!item)return;await openChannel(item.dataset.channelId)});els.userList.addEventListener('click',async e=>{const btn=e.target.closest('[data-start-chat]');if(!btn)return;await startDirectChat(btn.dataset.startChat)});els.messagesWrap.addEventListener('click',async e=>{const btn=e.target.closest('[data-react-post]');if(btn)await reactToPost(btn.dataset.reactPost,btn.dataset.reaction);const adminBtn=e.target.closest('[data-toggle-admin]');if(adminBtn)await toggleAdmin(adminBtn.dataset.toggleAdmin)});document.body.addEventListener('click',e=>{const bgBtn=e.target.closest('[data-buy-bg]');if(bgBtn)buyBackgroundLocal(bgBtn.dataset.buyBg);const giftBtn=e.target.closest('[data-buy-gift]');if(giftBtn)buyGiftLocal(giftBtn.dataset.buyGift);})}
-    function renderEmpty(){els.activeChatAvatar.className='avatar fallback';els.activeChatAvatar.style.background='#2a3b4a';els.activeChatAvatar.textContent='C';els.activeChatTitle.textContent=state.activeMode==='channels'?'Выбери канал':'Выбери чат';els.activeChatSubtitle.textContent='Профиль и сообщения';els.channelSubscribeBtn.classList.add('hidden');els.channelManageBtn.classList.add('hidden');els.messagesWrap.innerHTML=`<div class="empty"><div>${state.activeMode==='channels'?'Выбери канал или создай новый.':'Выбери чат или создай новый.'}</div></div>`;state.activeProfileUserId=null}
-    async function init(){bindStaticEvents();setAuthTab('register');setMode('chats');renderEmpty();const {data,error}=await supabase.auth.getSession();if(error){console.error(error);showAuth();return}if(data.session?.user){state.user=data.session.user;await bootApp()}else showAuth();supabase.auth.onAuthStateChange(async(_event,session)=>{if(session?.user){state.user=session.user;await bootApp()}else showAuth()})}
-    init();
+    function getProfile(profileId) {
+      return profiles[profileId];
+    }
+
+    function tProfileName(profileId) {
+      const profile = getProfile(profileId);
+      return profile ? tGame(profile.name) : "";
+    }
+
+    function formatFollowers(value) {
+      if (currentLang === "ru") return new Intl.NumberFormat("ru-RU").format(value);
+      if (currentLang === "zh") return new Intl.NumberFormat("zh-CN").format(value);
+      return new Intl.NumberFormat("en-US").format(value);
+    }
+
+    function applyLanguage() {
+      const t = ui[currentLang];
+      searchInput.placeholder = t.search;
+      suggestionsTitle.textContent = t.suggestions;
+      resultsTitle.textContent = t.results;
+      getCodeBtn.textContent = t.getCode;
+      closeModalBtn.textContent = t.close;
+      codeLabel.textContent = t.codeLabel;
+      codeNote.textContent = t.codeNote;
+      emptyState.textContent = t.empty;
+      topRatedKicker.textContent = t.topRated;
+      publisherLabel.textContent = t.publisher;
+      developerLabel.textContent = t.developer;
+      profileGamesTitle.textContent = t.gamesTitle;
+      closeProfileBtn.textContent = t.closeProfile;
+      langToggle.textContent = currentLang.toUpperCase();
+      renderTopRated();
+    }
+
+    function getGame(id) {
+      return games.find(game => game.id === id);
+    }
+
+    function renderTopRated() {
+      const t = ui[currentLang];
+      const game = getGame(topRatedGameId);
+      if (!game) return;
+
+      topRatedName.textContent = tGame(game.title);
+      topRatedGenre.textContent = tGame(game.genre);
+      topRatedScore.textContent = `${t.rating}: ${game.rating.toFixed(1)} / 5`;
+      topRatedCount.textContent = `${game.ratingCount} ${t.votes}`;
+      topRatedBg.style.backgroundImage = `url("${game.featuredImage}")`;
+    }
+
+    function makePoster(game) {
+      if (game.featuredImage) {
+        return `
+          <div class="tile-poster image">
+            <img src="${game.featuredImage}" alt="${tGame(game.title)}">
+          </div>
+        `;
+      }
+      return `<div class="tile-poster">${game.initials}</div>`;
+    }
+
+    function makeMiniPoster(game) {
+      if (game.featuredImage) {
+        return `
+          <div class="mini-poster image">
+            <img src="${game.featuredImage}" alt="${tGame(game.title)}">
+          </div>
+        `;
+      }
+      return `<div class="mini-poster">${game.initials}</div>`;
+    }
+
+    function makeResultPoster(game) {
+      if (game.featuredImage) {
+        return `
+          <div class="result-poster image">
+            <img src="${game.featuredImage}" alt="${tGame(game.title)}">
+          </div>
+        `;
+      }
+      return `<div class="result-poster">${game.initials}</div>`;
+    }
+
+    function createTile(game, extraClass = "") {
+      return `
+        <button class="game-tile ${extraClass}" type="button" data-game-id="${game.id}">
+          ${makePoster(game)}
+          <div class="tile-overlay">
+            <div class="tile-title">${tGame(game.title)}</div>
+            <div class="tile-sub">${tGame(game.genre)}</div>
+          </div>
+        </button>
+      `;
+    }
+
+    function attachGameTileEvents() {
+      document.querySelectorAll(".game-tile").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const game = getGame(btn.dataset.gameId);
+          if (game) openModal(game);
+        });
+      });
+    }
+
+    function renderCatalog(filtered = games) {
+      const featured = filtered.find(g => g.id === featuredId);
+      const sides = sideIds.map(getGame).filter(Boolean).filter(g => filtered.some(f => f.id === g.id));
+      const bottoms = bottomIds.map(getGame).filter(Boolean).filter(g => filtered.some(f => f.id === g.id));
+
+      leftColumn.innerHTML = featured ? createTile(featured, "") : "";
+      rightColumn.innerHTML = sides.map(game => createTile(game, "small")).join("");
+      bottomRow.innerHTML = bottoms.map(game => createTile(game, "bottom")).join("");
+
+      attachGameTileEvents();
+    }
+
+    function renderList(filtered = games) {
+      resultsCount.textContent = `${ui[currentLang].found}: ${filtered.length}`;
+
+      resultsList.innerHTML = filtered.map(game => `
+        <button class="result-item" type="button" data-game-id="${game.id}">
+          ${makeResultPoster(game)}
+          <div class="result-main">
+            <div class="result-name">${tGame(game.title)}</div>
+            <div class="result-genre">${tGame(game.genre)}</div>
+            <div class="result-desc">${tGame(game.description)}</div>
+          </div>
+          <div class="result-side">${ui[currentLang].open}</div>
+        </button>
+      `).join("");
+
+      document.querySelectorAll(".result-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const game = getGame(btn.dataset.gameId);
+          if (game) openModal(game);
+        });
+      });
+    }
+
+    function showCatalogView() {
+      catalogView.classList.remove("hidden");
+      resultsView.classList.add("hidden");
+      emptyState.classList.remove("show");
+      topRatedSection.style.display = "";
+    }
+
+    function showResultsView(filtered) {
+      topRatedSection.style.display = "none";
+      catalogView.classList.add("hidden");
+      resultsView.classList.remove("hidden");
+
+      if (!filtered.length) {
+        resultsView.classList.add("hidden");
+        emptyState.classList.add("show");
+        return;
+      }
+
+      emptyState.classList.remove("show");
+      renderList(filtered);
+    }
+
+    function renderSuggestions(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        suggestionsBox.classList.remove("show");
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      const found = games.filter(game => {
+        const haystack = `${tGame(game.title)} ${tGame(game.genre)} ${tGame(game.description)} ${game.id}`.toLowerCase();
+        return haystack.includes(q);
+      }).slice(0, 5);
+
+      if (!found.length) {
+        suggestionsBox.classList.remove("show");
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      suggestionsList.innerHTML = found.map(game => `
+        <button class="suggestion-item" type="button" data-game-id="${game.id}">
+          ${makeMiniPoster(game)}
+          <div class="mini-meta">
+            <div class="mini-title">${tGame(game.title)}</div>
+            <div class="mini-sub">${tGame(game.genre)}</div>
+          </div>
+        </button>
+      `).join("");
+
+      suggestionsBox.classList.add("show");
+
+      suggestionsList.querySelectorAll(".suggestion-item").forEach(item => {
+        item.addEventListener("click", () => {
+          const game = getGame(item.dataset.gameId);
+          if (!game) return;
+          searchInput.value = tGame(game.title);
+          suggestionsBox.classList.remove("show");
+          showResultsView([game]);
+        });
+      });
+    }
+
+    function openModal(game) {
+      modalGenre.textContent = tGame(game.genre);
+      modalTitle.textContent = tGame(game.title);
+      modalDescription.textContent = tGame(game.description);
+      modalCode.textContent = game.code;
+      currentCode = game.code;
+
+      modalPublisherBtn.textContent = tProfileName(game.publisherId);
+      modalPublisherBtn.dataset.profileId = game.publisherId;
+      modalDeveloperBtn.textContent = tProfileName(game.developerId);
+      modalDeveloperBtn.dataset.profileId = game.developerId;
+
+      if (game.warning) {
+        modalWarning.textContent = tGame(game.warning);
+        modalWarning.classList.add("show");
+      } else {
+        modalWarning.textContent = "";
+        modalWarning.classList.remove("show");
+      }
+
+      if (game.featuredImage) {
+        modalBanner.style.backgroundImage = `url("${game.featuredImage}")`;
+      } else {
+        modalBanner.style.backgroundImage = "linear-gradient(135deg, #181818, #303030)";
+      }
+
+      codeBox.classList.remove("show");
+
+      if (game.screenshots && game.screenshots.length) {
+        modalScreens.innerHTML = game.screenshots.map(src => `
+          <div class="screen-box">
+            <img src="${src}" alt="${tGame(game.title)}">
+          </div>
+        `).join("");
+      } else {
+        modalScreens.innerHTML = `
+          <div class="screen-box">${game.initials} 1</div>
+          <div class="screen-box">${game.initials} 2</div>
+        `;
+      }
+
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+      if (!profileModal.classList.contains("active")) {
+        document.body.style.overflow = "";
+      }
+      codeBox.classList.remove("show");
+    }
+
+    function openProfile(profileId) {
+      const profile = getProfile(profileId);
+      if (!profile) return;
+
+      const profileGames = games.filter(game =>
+        game.publisherId === profileId || game.developerId === profileId
+      );
+
+      profileAvatar.textContent = profile.initials;
+      profileName.textContent = tGame(profile.name);
+      profileFollowers.textContent = `${formatFollowers(profile.followers)} ${ui[currentLang].followers}`;
+
+      if (profileGames.length && profileGames[0].featuredImage) {
+        profileCover.style.background = `
+          linear-gradient(135deg, rgba(243,195,22,0.22), rgba(28,28,28,0.92)),
+          url("${profileGames[0].featuredImage}") center center / cover no-repeat
+        `;
+      } else {
+        profileCover.style.background = `
+          linear-gradient(135deg, rgba(243,195,22,0.22), rgba(28,28,28,0.92)),
+          #151515
+        `;
+      }
+
+      profileGamesGrid.innerHTML = profileGames.map(game => `
+        <button class="profile-game-card" type="button" data-game-id="${game.id}">
+          <div class="profile-game-poster">
+            <img src="${game.featuredImage}" alt="${tGame(game.title)}">
+          </div>
+          <div class="profile-game-body">
+            <div class="profile-game-title">${tGame(game.title)}</div>
+            <div class="profile-game-sub">${tGame(game.genre)}</div>
+          </div>
+        </button>
+      `).join("");
+
+      profileGamesGrid.querySelectorAll(".profile-game-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const game = getGame(card.dataset.gameId);
+          closeProfile();
+          if (game) openModal(game);
+        });
+      });
+
+      profileModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeProfile() {
+      profileModal.classList.remove("active");
+      if (!modal.classList.contains("active")) {
+        document.body.style.overflow = "";
+      }
+    }
+
+    topRatedCard.addEventListener("click", () => {
+      const game = getGame(topRatedGameId);
+      if (game) openModal(game);
+    });
+
+    modalPublisherBtn.addEventListener("click", () => {
+      const profileId = modalPublisherBtn.dataset.profileId;
+      if (profileId) openProfile(profileId);
+    });
+
+    modalDeveloperBtn.addEventListener("click", () => {
+      const profileId = modalDeveloperBtn.dataset.profileId;
+      if (profileId) openProfile(profileId);
+    });
+
+    searchInput.addEventListener("input", () => {
+      const value = searchInput.value.trim().toLowerCase();
+
+      renderSuggestions(value);
+
+      if (!value) {
+        showCatalogView();
+        renderCatalog(games);
+        return;
+      }
+
+      const filtered = games.filter(game => {
+        const haystack = `${tGame(game.title)} ${tGame(game.genre)} ${tGame(game.description)} ${game.id}`.toLowerCase();
+        return haystack.includes(value);
+      });
+
+      showResultsView(filtered);
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const value = searchInput.value.trim().toLowerCase();
+
+        if (!value) {
+          showCatalogView();
+          renderCatalog(games);
+          suggestionsBox.classList.remove("show");
+          return;
+        }
+
+        const filtered = games.filter(game => {
+          const haystack = `${tGame(game.title)} ${tGame(game.genre)} ${tGame(game.description)} ${game.id}`.toLowerCase();
+          return haystack.includes(value);
+        });
+
+        showResultsView(filtered);
+        suggestionsBox.classList.remove("show");
+      }
+    });
+
+    langToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      langMenu.classList.toggle("show");
+    });
+
+    document.querySelectorAll(".lang-option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentLang = btn.dataset.lang;
+        applyLanguage();
+        langMenu.classList.remove("show");
+
+        const value = searchInput.value.trim().toLowerCase();
+        renderCatalog(games);
+
+        if (value) {
+          const filtered = games.filter(game => {
+            const haystack = `${tGame(game.title)} ${tGame(game.genre)} ${tGame(game.description)} ${game.id}`.toLowerCase();
+            return haystack.includes(value);
+          });
+
+          if (!resultsView.classList.contains("hidden")) {
+            showResultsView(filtered);
+          }
+
+          if (suggestionsBox.classList.contains("show")) {
+            renderSuggestions(value);
+          }
+        }
+
+        if (modal.classList.contains("active")) {
+          const openGame = games.find(game => game.code === currentCode);
+          if (openGame) openModal(openGame);
+        }
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-wrap")) {
+        suggestionsBox.classList.remove("show");
+      }
+      if (!e.target.closest(".lang-box")) {
+        langMenu.classList.remove("show");
+      }
+      if (e.target === modal) {
+        closeModal();
+      }
+      if (e.target === profileModal) {
+        closeProfile();
+      }
+    });
+
+    getCodeBtn.addEventListener("click", () => {
+      if (!currentCode) return;
+      codeBox.classList.add("show");
+    });
+
+    closeModalBtn.addEventListener("click", closeModal);
+    closeProfileBtn.addEventListener("click", closeProfile);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (profileModal.classList.contains("active")) {
+          closeProfile();
+          return;
+        }
+        if (modal.classList.contains("active")) {
+          closeModal();
+        }
+      }
+    });
+
+    // Принудительная прокрутка колесиком на главной странице
+    window.addEventListener("wheel", (e) => {
+      if (modal.classList.contains("active") || profileModal.classList.contains("active")) return;
+
+      const scroller = document.scrollingElement || document.documentElement;
+      e.preventDefault();
+      scroller.scrollTop += e.deltaY;
+    }, { passive: false });
+
+    applyLanguage();
+    renderCatalog(games);
+    renderTopRated();
+    showCatalogView();
   </script>
 </body>
 </html>
